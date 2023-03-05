@@ -65,7 +65,7 @@ const App = () => {
   }
   return (
     <div>
-      <h1 className="text-3xl sm:text-4xl my-20 font-header text-center">
+      <h1 className="text-3xl sm:text-4xl my-16 font-header text-center">
         What's the weather today?
       </h1>
       <main className="flex flex-col items-center">
@@ -77,7 +77,7 @@ const App = () => {
           >
             <div className=" w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5 flex items-center relative">
               <input
-                className=" h-10 px-5 pr-10 rounded-full w-full text-lg sm:text-xl focus:outline-none"
+                className=" h-10 px-5 pr-10 rounded-full w-full text-xl sm:text-xl focus:outline-none"
                 placeholder="Enter your city"
                 type="text"
                 value={searchPlace}
@@ -104,18 +104,18 @@ const App = () => {
         </div>
         {/* weather display card */}
       {showQuote ? <Quote/>:<div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  border rounded-2xl min-w-fit">
-          <h2 className="text-2xl sm:text-3xl my-6  ">
+          <h2 className="text-3xl sm:text-5xl my-6  ">
             {cityName}, {country}
           </h2>
 
           <div className="flex items-center">
-            <span className="text-3xl sm:text-4xl">{temp}°C</span>
+            <span className="text-5xl">{temp}°C</span>
             <img className="mx-10" src={tempImg} alt="" />
-            <p className="text-lg sm:text-xl">{condition}</p>
+            <p className="text-2xl sm:text-3xl">{condition}</p>
           </div>
-          <p className="text-xl sm:text-2xl">Feels like: {feelsLike}°C</p>
-          <div className=" text-sm sm:text-lg leading-7 mt-10">
-            <div className="flex items-center">
+          <p className="text-2xl sm:text-3xl">Feels like: {feelsLike}°C</p>
+          <div className="text-2xl leading-9 mt-10">
+            <div className="flex">
               <span className="mr-3">
                 <svg
                   width="20px"
@@ -152,7 +152,7 @@ const App = () => {
               </span>
               <p>Wind: {wind}kph</p>
             </div>
-            <div className="flex items-center">
+            <div className="flex">
               <span className="mr-3">
                 <svg
                   width="20px"
@@ -166,7 +166,7 @@ const App = () => {
               </span>
               <p>Humidity: {humidity}%</p>
             </div>
-            <div className="flex items-center">
+            <div className="flex">
               <span className="mr-3">
                 <svg
                   width="20px"
@@ -216,7 +216,7 @@ const App = () => {
               <p>UV: {uv}</p>
             </div>
           </div>
-          <span className="flex justify-end text-sm sm:text-lg">Local time: {time}</span>
+          <span className="flex justify-end">Local time: {time}</span>
         </div>}
         
       </main>

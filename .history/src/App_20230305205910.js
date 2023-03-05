@@ -109,12 +109,12 @@ const App = () => {
           </h2>
 
           <div className="flex items-center">
-            <span className="text-3xl sm:text-4xl">{temp}°C</span>
+            <span className="text-4xl">{temp}°C</span>
             <img className="mx-10" src={tempImg} alt="" />
             <p className="text-lg sm:text-xl">{condition}</p>
           </div>
           <p className="text-xl sm:text-2xl">Feels like: {feelsLike}°C</p>
-          <div className=" text-sm sm:text-lg leading-7 mt-10">
+          <div className="text-xl leading-7 mt-10">
             <div className="flex items-center">
               <span className="mr-3">
                 <svg
@@ -216,7 +216,7 @@ const App = () => {
               <p>UV: {uv}</p>
             </div>
           </div>
-          <span className="flex justify-end text-sm sm:text-lg">Local time: {time}</span>
+          <span className="flex justify-end">Local time: {time}</span>
         </div>}
         
       </main>
