@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react'
+
 import Weather from './components/Weather'
-import Quote from './components/Quote'
 import SearchBar from './components/SearchBar'
 import Header from './components/Header'
+import Quote from './components/Quote'
+
+import color from './data/color.json'
+
+
 
 const App = () => {
   const [weatherObj, setWeatherObj] = useState({
@@ -22,9 +27,16 @@ const App = () => {
 
   const API_URL = 'https://weatherapi-com.p.rapidapi.com/current.json'
 
-  // useEffect(() => {
-  //   document.body.style.backgroundColor = 'grey'
-  // }, [])
+  useEffect(() => {
+    function getRandomIndex(arr) {
+      const index=Math.floor(Math.random()*arr.length)
+      return index
+    }
+    
+    const randomIndex = getRandomIndex(color.colors)
+    const bgColor=color.colors[randomIndex]
+    document.body.style.backgroundColor = `${bgColor}`
+  }, [weatherObj])
 
   const searchWeather = async (city) => {
     try {
@@ -69,7 +81,7 @@ const App = () => {
   }
   return (
     <div>
-     <Header/>
+      <Header />
       <main className="flex flex-col items-center">
         {/* search bar */}
         <SearchBar

@@ -15,7 +15,7 @@ const SearchBar = ({ searchPlace, setSearchPlace,searchWeather}) => {
       >
         <div className=" w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5 flex items-center relative">
           <input
-            className=" h-10 px-5 pr-10 rounded-full w-full text-lg sm:text-xl focus:outline-none"
+            className=" h-10 px-5 pr-10 rounded-full w-full text-lg sm:text-xl focus:outline-none shadow"
             placeholder="Enter your city"
             type="text"
             value={searchPlace}
