@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Weather from './components/Weather'
 import Quote from './components/Quote'
+import SearchBar from './components/SearchBar'
+import Header from './components/Header'
 
 const App = () => {
   const [weatherObj, setWeatherObj] = useState({
@@ -24,10 +26,8 @@ const App = () => {
   //   document.body.style.backgroundColor = 'grey'
   // }, [])
 
-  const searchWeather = (city) => async (e) => {
-    e.preventDefault()
+  const searchWeather = async (city) => {
     try {
-      // e.preventDefault()
       const response = await fetch(`${API_URL}?q=${city}`, {
         method: 'GET',
         headers: {
@@ -49,6 +49,7 @@ const App = () => {
         },
       } = weather
       const imgSrc = `http:${icon}`
+
       setWeatherObj({
         cityName: name,
         country,
@@ -61,7 +62,6 @@ const App = () => {
         humidity,
         uv,
       })
-
       setShowQuote(false)
     } catch (error) {
       console.log('wrong~~')
@@ -69,47 +69,16 @@ const App = () => {
   }
   return (
     <div>
-      <h1 className="text-3xl sm:text-4xl my-20 font-header text-center">
-        What's the weather today?
-      </h1>
+     <Header/>
       <main className="flex flex-col items-center">
         {/* search bar */}
-        <div className="w-full ">
-          <form
-            className="w-full flex justify-center"
-            onSubmit={searchWeather(searchPlace)}
-          >
-            <div className=" w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5 flex items-center relative">
-              <input
-                className=" h-10 px-5 pr-10 rounded-full w-full text-lg sm:text-xl focus:outline-none"
-                placeholder="Enter your city"
-                type="text"
-                value={searchPlace}
-                onChange={(e) => setSearchPlace(e.target.value)}
-              />
-              <button type="submit" className="absolute right-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-8 h-8 text-slate-300"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </form>
-        </div>
+        <SearchBar
+          searchPlace={searchPlace}
+          setSearchPlace={setSearchPlace}
+          searchWeather={searchWeather}
+        />
         {/* weather display card */}
-        {showQuote ? (
-          <Quote />
-        ) : <Weather data={weatherObj} />}
+        {showQuote ? <Quote /> : <Weather data={weatherObj} />}
       </main>
     </div>
   )
