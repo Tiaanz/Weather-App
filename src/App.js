@@ -5,9 +5,7 @@ import SearchBar from './components/SearchBar'
 import Header from './components/Header'
 import Quote from './components/Quote'
 
-import color from './data/color.json'
-
-
+import weatherImg from './data/weather.json'
 
 const App = () => {
   const [weatherObj, setWeatherObj] = useState({
@@ -28,14 +26,25 @@ const App = () => {
   const API_URL = 'https://weatherapi-com.p.rapidapi.com/current.json'
 
   useEffect(() => {
-    function getRandomIndex(arr) {
-      const index=Math.floor(Math.random()*arr.length)
-      return index
+    // function getRandomIndex(arr) {
+    //   const index=Math.floor(Math.random()*arr.length)
+    //   return index
+    // }
+    if (weatherObj.condition.includes('Sunny')) {
+      document.body.style.backgroundImage = `url(${weatherImg.sunny})`
+    } else if (weatherObj.condition.includes('rain')) {
+      document.body.style.backgroundImage = `url(${weatherImg.rain})`
+    } else if (weatherObj.condition.includes('cloudy')) {
+      document.body.style.backgroundImage = `url(${weatherImg.cloudy})`
+    } else if (weatherObj.condition.includes('Overcast')) {
+      document.body.style.backgroundImage = `url(${weatherImg.overcast})`
+    } else if (weatherObj.condition.includes('snow')) {
+      document.body.style.backgroundImage = `url(${weatherImg.snow})`
+    } else if (weatherObj.condition.includes('Clear')) {
+      document.body.style.backgroundImage = `url(${weatherImg.clear})`
+    } else {
+      document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
     }
-    
-    const randomIndex = getRandomIndex(color.colors)
-    const bgColor=color.colors[randomIndex]
-    document.body.style.backgroundColor = `${bgColor}`
   }, [weatherObj])
 
   const searchWeather = async (city) => {

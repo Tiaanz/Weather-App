@@ -2,7 +2,7 @@ import React from 'react'
 
 const Weather = ({data}) => {
   return (
-    <div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  border rounded-2xl min-w-fit shadow-md">
+    <div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-2xl shadow-neutral-50">
       <h2 className="text-3xl sm:text-4xl my-6  ">
         {data.cityName}, {data.country}
       </h2>

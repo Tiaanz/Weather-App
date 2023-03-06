@@ -5,9 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300&display=swap');
 
-body {
-  background-color: #f3f4f6;
-}
+/* body { */
+  /* background-color: #f3f4f6; */
+  /* background-image: url('../public/bg-photos/rain.jpg'); */
+/* } */
 
 * {
   margin: 0;

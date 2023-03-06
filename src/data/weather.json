@@ -1,0 +1,9 @@
+{
+  "rain": "bg-photos/rain.jpg",
+  "overcast": "bg-photos/overcast.jpg",
+  "clear": "bg-photos/clear.jpg",
+  "cloudy": "bg-photos/cloudy.jpg",
+  "sunny": "bg-photos/sunny.jpg",
+  "snow": "bg-photos/snow.jpg",
+  "bgImg":"bg-photos/bgImg.jpg"
+}
