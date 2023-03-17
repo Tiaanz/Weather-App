@@ -1,0 +1,61 @@
+import React, { useEffect, useState } from 'react'
+import { useLocation, useParams, useMatch, useNavigate } from 'react-router-dom'
+import ForecastCard from '../components/ForecastCard'
+
+const WeatherDetails = () => {
+  const { cityname } = useParams()
+
+  const [forecastArr, setForecastArr] = useState([])
+  const [nameCity, setNameCity] = useState('')
+  const [countryName, setCountryName] = useState('')
+
+  const API_URL = 'https://weatherapi-com.p.rapidapi.com/forecast.json'
+
+  useEffect(() => {
+    document.body.style.backgroundColor = 'rgb(219 234 254)'
+    async function fetchData() {
+      try {
+        const response = await fetch(`${API_URL}?q=${cityname}&days=3`, {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key':
+              '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61',
+            'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
+          },
+        })
+        const weather = await response.json()
+        const {
+          forecast: { forecastday },
+          location: { name: name2, country },
+        } = weather
+        setForecastArr(forecastday)
+        setNameCity(name2)
+        setCountryName(country)
+      } catch (error) {
+        console.log(error.message)
+      }
+    }
+    fetchData()
+  }, [])
+
+  return (
+    <>
+      {nameCity ? (
+        <div className="box-border w-5/6 text-center sm:w-4/5 sm:text-left mx-auto ">
+          <h1 className="text-2xl my-10 font-header sm:text-3xl sm:mb-20 ">
+            {nameCity}, {countryName}
+          </h1>
+          {forecastArr.map((day) => (
+            <ForecastCard key={day.date} forecast={day} />
+          ))}
+        </div>
+      ) : (
+        <h1 className="text-2xl my-10 font-header sm:text-3xl sm:mb-20 ">
+          404 Page not Found
+        </h1>
+      )}
+    </>
+  )
+}
+
+export default WeatherDetails
