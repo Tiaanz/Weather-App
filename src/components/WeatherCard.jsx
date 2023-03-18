@@ -6,7 +6,7 @@ const WeatherCard = ({ data }) => {
 
   const url=`${data.cityName}_${data.country.trim()}`
   return (
-    <div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100">
+    <div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100 bg-white opacity-70">
       <h2 className="text-2xl vsm:text-4xl my-6  ">
         <Link reloadDocument to={url}>
           {data.cityName}, {data.country}

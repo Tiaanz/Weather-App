@@ -60,6 +60,7 @@ const SearchBar = ({ searchPlace, setSearchPlace, searchWeather }) => {
   return (
     <div className="w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5">
       <form className="w-full" onSubmit={SubmitHandler}>
+      
         <ReactSearchAutocomplete
           items={searchResult}
           onSearch={handleOnSearch}

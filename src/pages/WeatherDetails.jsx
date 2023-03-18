@@ -8,11 +8,13 @@ const WeatherDetails = () => {
   const [forecastArr, setForecastArr] = useState([])
   const [nameCity, setNameCity] = useState('')
   const [countryName, setCountryName] = useState('')
-
+  const [isValid, setIsValid] = useState(false)
+  
   const API_URL = 'https://weatherapi-com.p.rapidapi.com/forecast.json'
 
   useEffect(() => {
     document.body.style.backgroundColor = 'rgb(219 234 254)'
+
     async function fetchData() {
       try {
         const response = await fetch(`${API_URL}?q=${cityname}&days=3`, {
@@ -36,6 +38,7 @@ const WeatherDetails = () => {
       }
     }
     fetchData()
+    
   }, [])
 
   return (
@@ -51,7 +54,7 @@ const WeatherDetails = () => {
         </div>
       ) : (
         <h1 className="text-2xl my-10 font-header sm:text-3xl sm:mb-20 ">
-          404 Page not Found
+          Loading...(page might not be found)
         </h1>
       )}
     </>
