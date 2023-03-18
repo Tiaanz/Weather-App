@@ -53,13 +53,13 @@ const Home = () => {
       document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
     }
 
-
-  if (searchPlace !== '') {
-    setShowQuote(false)
-  } else {
-    setShowQuote(true)
-  }
-  }, [weatherObj,searchPlace])
+ 
+  // if (searchPlace !== '') {
+  //   setShowQuote(false)
+  // } else {
+  //   setShowQuote(true)
+  // }
+  }, [weatherObj])
 
 
   const searchWeather = async (city) => {
@@ -100,6 +100,7 @@ const Home = () => {
       })
       
       setShowWeatherCard(true)
+      setShowQuote(false)
     } catch (error) {
       console.log(error.message)
     }
