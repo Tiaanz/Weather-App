@@ -58,18 +58,18 @@ const SearchBar = ({ searchPlace, setSearchPlace, searchWeather }) => {
 
 
   return (
-    <div className="w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5">
+    <div className="w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5 focus:outline-none">
       <form className="w-full" onSubmit={SubmitHandler}>
-      
-        <ReactSearchAutocomplete
+        <input type="text" className=''/>
+        {/* <ReactSearchAutocomplete
           items={searchResult}
           onSearch={handleOnSearch}
           onSelect={handleOnSelect}
           formatResult={formatResult}
-          showIcon={false}
+          onClear
           autoFocus
           styling={{fontSize:'18px', border:'none'}}
-        />
+        /> */}
       </form>
     </div>
   )

@@ -5,7 +5,9 @@ import weatherImg from '../data/weather.json'
 import Quote from './Quote'
 import WeatherCard from './WeatherCard'
 import SearchBar from './SearchBar'
+import SearchBar2 from './SearchBar2'
 import Header from './Header'
+import NavBar from './NavBar'
 
 const Home = () => {
   const [weatherObj, setWeatherObj] = useState({
@@ -52,13 +54,6 @@ const Home = () => {
     } else {
       document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
     }
-
- 
-  // if (searchPlace !== '') {
-  //   setShowQuote(false)
-  // } else {
-  //   setShowQuote(true)
-  // }
   }, [weatherObj])
 
 
@@ -108,14 +103,16 @@ const Home = () => {
 
   return (
     <div>
+      <NavBar/>
        <Header />
       <main className="flex flex-col items-center">
         {/* search bar */}
-        <SearchBar
+        {/* <SearchBar
           searchPlace={searchPlace}
           setSearchPlace={setSearchPlace}
           searchWeather={searchWeather}
-        />
+        /> */}
+        <SearchBar2/>
         {/* weather display card */}
       
         {showWeatherCard && <WeatherCard data={weatherObj} />}
