@@ -42,7 +42,7 @@ const WeatherDetails = () => {
   }, [])
 
   return (
-    <>
+    <div className='pb-14'>
       {nameCity ? (
         <div className="box-border w-5/6 text-center sm:w-4/5 sm:text-left mx-auto ">
           <h1 className="text-2xl my-10 font-header sm:text-3xl sm:mb-20 ">
@@ -57,7 +57,7 @@ const WeatherDetails = () => {
           Loading...(page might not be found)
         </h1>
       )}
-    </>
+    </div>
   )
 }
 

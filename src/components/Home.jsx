@@ -7,7 +7,7 @@ import WeatherCard from './WeatherCard'
 import SearchBar from './SearchBar'
 
 import Header from './Header'
-import NavBar from './NavBar'
+
 
 const Home = () => {
   const [weatherObj, setWeatherObj] = useState({
@@ -102,8 +102,8 @@ const Home = () => {
   }
 
   return (
-    <div>
-      <NavBar/>
+    <div className='pb-10'>
+   
        <Header />
       <main className="flex flex-col items-center">
         {/* search bar */}
