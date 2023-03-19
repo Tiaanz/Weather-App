@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useState} from 'react'
 import { Link } from 'react-router-dom'
+import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai'
 
 
 const WeatherCard = ({ data }) => {
 
+  const [toggleColor, setToggleColor] = useState(false)
+  
+
+
   const url=`${data.cityName}_${data.country.trim()}`
   return (
     <div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100 bg-white opacity-70">
-      <h2 className="text-2xl vsm:text-4xl my-6  ">
-        <Link reloadDocument to={url}>
+      <h2 className="text-2xl vsm:text-4xl my-6 flex items-center ">
+        <Link className=" hover:underline hover:cursor-pointer" reloadDocument to={url}>
           {data.cityName}, {data.country}
         </Link>
+        <AiOutlineHeart style={{color:!toggleColor?'black':'red'}} onClick={()=>setToggleColor(preState=>!preState)} className='mx-10 text-2xl hover:cursor-pointer'/>
       </h2>
 
       <div className=" flex vsm:items-center">
