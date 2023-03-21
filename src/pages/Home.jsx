@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
-
 import weatherImg from '../data/weather.json'
-import Quote from './Quote'
-import WeatherCard from './WeatherCard'
-import SearchBar from './SearchBar'
+import Quote from '../components/Quote'
+import WeatherCard from '../components/WeatherCard'
+import SearchBar from '../components/SearchBar'
 
-import Header from './Header'
-
+import Header from '../components/Header'
 
 const Home = () => {
   const [weatherObj, setWeatherObj] = useState({
@@ -24,7 +22,7 @@ const Home = () => {
   })
   const [searchPlace, setSearchPlace] = useState('')
   const [showQuote, setShowQuote] = useState(true)
-  const [showWeatherCard,setShowWeatherCard]=useState(false)
+  const [showWeatherCard, setShowWeatherCard] = useState(false)
 
   const API_URL = 'https://weatherapi-com.p.rapidapi.com/current.json'
 
@@ -54,8 +52,7 @@ const Home = () => {
     } else {
       document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
     }
-  }, [weatherObj])
-
+  }, [weatherObj.cityName])
 
   const searchWeather = async (city) => {
     try {
@@ -93,7 +90,7 @@ const Home = () => {
         humidity,
         uv,
       })
-      
+
       setShowWeatherCard(true)
       setShowQuote(false)
     } catch (error) {
@@ -102,9 +99,8 @@ const Home = () => {
   }
 
   return (
-    <div className='pb-10'>
-   
-       <Header />
+    <div className="pb-10">
+      <Header />
       <main className="flex flex-col items-center">
         {/* search bar */}
         <SearchBar
@@ -112,9 +108,9 @@ const Home = () => {
           setSearchPlace={setSearchPlace}
           searchWeather={searchWeather}
         />
-    
+
         {/* weather display card */}
-      
+
         {showWeatherCard && <WeatherCard data={weatherObj} />}
         {showQuote && <Quote />}
       </main>
