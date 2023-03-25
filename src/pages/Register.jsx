@@ -20,32 +20,53 @@ import { useNavigate } from 'react-router-dom'
 const theme = createTheme()
 
 export default function Register() {
+
+
+  const [emailMessage, setEmailMessage] = React.useState('')
+  const [passwordMessage, setPswMessage] = React.useState('')
+  const [emailInput, setEmailInput] = React.useState('')
+  const [pswInput,setPswInput]=React.useState('')
+  const navigate = useNavigate()
+
   React.useEffect(() => {
     document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
+ 
   }, [])
 
-  const [message, setMessage] = React.useState('')
 
-  const navigate=useNavigate()
+//validate the email address
+const validEmailRegex =
+/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+//validate the password
+const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    //validate the email address
-    const validRegex =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    
     const data = new FormData(event.currentTarget)
-    if (!data.get('email').match(validRegex)) {
-      setMessage('Please enter a correct email address')
-    } else {
+    
+    if (data.get('email').match(validEmailRegex) && data.get('password').match(validPasswordRegex)) {
+     
       const newUser = {
         firstName: data.get('firstName'),
         lastName: data.get('lastName'),
         email: data.get('email'),
         password: data.get('password'),
       }
-      console.log(newUser)  
+      console.log(newUser)
       await addUser(newUser)
       navigate('/')
+    } else {
+      if (!data.get('email').match(validEmailRegex)&&!data.get('password').match(validPasswordRegex)) {
+        setEmailMessage(() => 'Please enter a correct email address')
+        setPswMessage(()=>'Password must contain at least 8 characters with letters and numbers')
+      } else {
+        if (!data.get('email').match(validEmailRegex)) {
+          setEmailMessage(() => 'Please enter a correct email address')
+        } else {
+          setPswMessage(()=>'Password must contain at least 8 characters with letters and numbers')
+        }
+      }
     }
   }
 
@@ -107,9 +128,11 @@ export default function Register() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                 
+                  onChange={()=>setEmailMessage('')}
                 />
               </Grid>
-              <p className="text-red-500 ml-5">{message}</p>
+              <p className="text-red-500 ml-5">{emailMessage}</p>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -119,8 +142,10 @@ export default function Register() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={()=>setPswMessage('')}
                 />
               </Grid>
+              <p className="text-red-500 ml-5">{passwordMessage}</p>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={

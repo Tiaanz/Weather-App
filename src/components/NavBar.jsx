@@ -58,9 +58,9 @@ const NavBar = () => {
           </div>
         </Link>
         <div className="text-xl  flex items-center ">
-         
-          <div onClick={handleOpen} className='flex text-slate-700 items-center hover:underline hover:cursor-pointer'><BiLogIn className="mx-3 text-2xl" />
-              Log in </div>
+        <BiLogIn className="mx-3 text-2xl" />
+          <button onClick={handleOpen} className='text-base rounded-full bg-white px-4 py-1 hover:cursor-pointer shadow-md hover:ring ring-white'>
+              Log in </button>
        
           <Link to={'/register'}><button className='ml-6 text-base hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md'>Register</button></Link>
           
