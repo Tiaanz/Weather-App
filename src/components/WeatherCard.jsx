@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
+
 
 const WeatherCard = ({ data }) => {
   const [toggleFav, setToggleFav] = useState(false)
