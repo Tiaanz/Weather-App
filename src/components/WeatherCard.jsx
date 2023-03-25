@@ -1,22 +1,30 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import {AiOutlineHeart,AiFillHeart} from 'react-icons/ai'
-
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 
 const WeatherCard = ({ data }) => {
+  const [toggleFav, setToggleFav] = useState(false)
 
-  const [toggleColor, setToggleColor] = useState(false)
-  
-
-
-  const url=`${data.cityName}_${data.country.trim()}`
+  const url = `${data.cityName}_${data.country.trim()}`
   return (
     <div className="my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100 bg-white opacity-70">
       <h2 className="text-2xl vsm:text-4xl my-6 flex items-center ">
-        <Link className=" hover:underline hover:cursor-pointer" reloadDocument to={url}>
+        <Link
+          className=" hover:underline hover:cursor-pointer"
+          reloadDocument
+          to={url}
+        >
           {data.cityName}, {data.country}
         </Link>
-        <AiOutlineHeart style={{color:!toggleColor?'black':'red'}} onClick={()=>setToggleColor(preState=>!preState)} className='mx-10 text-2xl hover:cursor-pointer'/>
+        <div className="ml-10" onClick={() => setToggleFav(preState => !preState)}>
+          <svg
+            width="30"
+            height="30"
+            style={{fill:!toggleFav?'none':'red' ,stroke:!toggleFav?'black':'none', strokeWidth:'2px'}}
+          >
+            <path d="M11.198 9C8.85 9 7 10.89 7 13.29c0 3.128 1.92 5.82 9 11.71 7.08-5.89 9-8.582 9-11.71C25 10.89 23.15 9 20.802 9c-2.098 0-3.237 1.273-4.126 2.327l-.676.8-.676-.8C14.434 10.31 13.296 9 11.197 9h0z"></path>
+          </svg>
+        </div>
       </h2>
 
       <div className=" flex vsm:items-center">
