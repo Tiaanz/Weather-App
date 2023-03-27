@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams, useMatch, useNavigate } from 'react-router-dom'
+import {useParams } from 'react-router-dom'
 import ForecastCard from '../components/ForecastCard'
 
-const WeatherDetails = () => {
+const WeatherDetails = ({setBgColor,setBgImg}) => {
   const { cityname } = useParams()
 
   const [forecastArr, setForecastArr] = useState([])
   const [nameCity, setNameCity] = useState('')
   const [countryName, setCountryName] = useState('')
   const [isValid, setIsValid] = useState(false)
-  
+
   const API_URL = 'https://weatherapi-com.p.rapidapi.com/forecast.json'
 
   useEffect(() => {
-    document.body.style.backgroundColor = 'rgb(219 234 254)'
+    setBgColor('rgb(219 234 254)')
+    setBgImg('')
 
     async function fetchData() {
       try {
@@ -38,7 +39,6 @@ const WeatherDetails = () => {
       }
     }
     fetchData()
-    
   }, [])
 
   return (

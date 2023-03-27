@@ -7,11 +7,30 @@ import Layout from './components/Layout'
 import Register from './pages/Register'
 
 const App = () => {
+
+
+  const [weatherObj, setWeatherObj] = useState({
+    cityName: '',
+    country: '',
+    time: '',
+    temp: '',
+    tempImg: '',
+    condition: '',
+    feelsLike: '',
+    wind: '',
+    humidity: '',
+    uv: '',
+  })
+  const [showWeatherCard, setShowWeatherCard] = useState(false)
+  const [showQuote, setShowQuote] = useState(true)
+  const [bgImg, setBgImg] = useState("url('bg-photos/bgImg.png')")
+  const [bgColor,setBgColor]=useState('')
+
   return (
-    <Layout>
+    <Layout weatherObj={weatherObj} bgImg={bgImg} setBgImg={setBgImg} bgColor={bgColor} setBgColor={setBgColor}>
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/:cityname" element={<WeatherDetails />}></Route>
+        <Route path="/" element={<Home weatherObj={weatherObj} setWeatherObj={setWeatherObj} showWeatherCard={showWeatherCard} setShowWeatherCard={setShowWeatherCard} bgColor={bgColor} setBgColor={setBgColor} bgImg={bgImg} setBgImg={setBgImg} showQuote={showQuote} setShowQuote={setShowQuote} />}></Route>
+        <Route path="/:cityname" element={<WeatherDetails setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>
     </Layout>
