@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 
-const SearchBar = ({ searchPlace, setSearchPlace, searchWeather }) => {
-  const API_URL = 'https://weatherapi-com.p.rapidapi.com/search.json'
+import { AutoComplete } from '../api/apiClient'
+const SearchBar = ({searchWeather }) => {
+
 
   const initialresult = [{ id: 1, name: 'Auckland' }]
   const [searchResult, setSearchResult] = useState(initialresult)
+  const [searchPlace, setSearchPlace] = useState('')
 
   const SubmitHandler = (e) => {
     e.preventDefault()
@@ -29,23 +31,16 @@ const SearchBar = ({ searchPlace, setSearchPlace, searchWeather }) => {
     } else {
       setSearchPlace('')
     }
-
     //get search results array
     async function fetchData() {
       try {
+     
         if (string) {
-          const response = await fetch(`${API_URL}?q=${string}`, {
-            method: 'GET',
-            headers: {
-              'X-RapidAPI-Key':
-                '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61',
-              'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
-            },
-          })
-          const result = await response.json()
+          const result = await AutoComplete(string)
           setSearchResult(() => result)
+        } 
         }
-      } catch (error) {
+       catch (error) {
         console.log(error.message)
       }
     }

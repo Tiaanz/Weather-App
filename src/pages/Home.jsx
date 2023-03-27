@@ -1,72 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState,useEffect } from 'react'
 
-import weatherImg from '../data/weather.json'
+
 import Quote from '../components/Quote'
 import WeatherCard from '../components/WeatherCard'
 import SearchBar from '../components/SearchBar'
 import Header from '../components/Header'
 
+import { getWeatherByCity } from '../api/apiClient'
 
-const Home = () => {
-  const [weatherObj, setWeatherObj] = useState({
-    cityName: '',
-    country: '',
-    time: '',
-    temp: '',
-    tempImg: '',
-    condition: '',
-    feelsLike: '',
-    wind: '',
-    humidity: '',
-    uv: '',
-  })
-  const [searchPlace, setSearchPlace] = useState('')
-  const [showQuote, setShowQuote] = useState(true)
-  const [showWeatherCard, setShowWeatherCard] = useState(false)
+const Home = ({weatherObj,setWeatherObj,showWeatherCard,setShowWeatherCard,setBgImg,setBgColor,showQuote,setShowQuote}) => {
 
- 
-
-  const API_URL = 'https://weatherapi-com.p.rapidapi.com/current.json'
 
   useEffect(() => {
-    // function getRandomIndex(arr) {
-    //   const index=Math.floor(Math.random()*arr.length)
-    //   return index
-    // }
-    if (weatherObj.condition.includes('Sunny')) {
-      document.body.style.backgroundImage = `url(${weatherImg.sunny})`
-      document.body.style.backgroundSize = 'cover'
-    } else if (weatherObj.condition.includes('rain')) {
-      document.body.style.backgroundImage = `url(${weatherImg.rain})`
-      document.body.style.backgroundSize = 'cover'
-    } else if (weatherObj.condition.toLowerCase().includes('cloudy')) {
-      document.body.style.backgroundImage = `url(${weatherImg.cloudy})`
-      document.body.style.backgroundSize = 'cover'
-    } else if (weatherObj.condition.includes('Overcast')) {
-      document.body.style.backgroundImage = `url(${weatherImg.overcast})`
-      document.body.style.backgroundSize = 'cover'
-    } else if (weatherObj.condition.includes('snow')) {
-      document.body.style.backgroundImage = `url(${weatherImg.snow})`
-      document.body.style.backgroundSize = 'cover'
-    } else if (weatherObj.condition.includes('Clear')) {
-      document.body.style.backgroundImage = `url(${weatherImg.clear})`
-      document.body.style.backgroundSize = 'cover'
-    } else {
-      document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
-    }
-  }, [weatherObj.cityName])
+
+    setBgImg("should have bgImg")
+    setBgColor('')
+  
+  }, [])
+  
 
   const searchWeather = async (city) => {
     try {
-      const response = await fetch(`${API_URL}?q=${city}`, {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key':
-            '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61',
-          'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
-        },
-      })
-      const weather = await response.json()
+      const weather = await getWeatherByCity(city)
       const {
         location: { name, country, localtime },
         current: {
@@ -101,17 +56,14 @@ const Home = () => {
   }
 
   return (
-    <div className="pb-10">
+    <div className="pb-10 bg-cover" >
       <Header />
       <main className="flex flex-col items-center">
         {/* search bar */}
-        <SearchBar
-          searchPlace={searchPlace}
-          setSearchPlace={setSearchPlace}
+        <SearchBar  
           searchWeather={searchWeather}
         />
         {/* weather display card */}
-
         {showWeatherCard && <WeatherCard data={weatherObj} />}
         {showQuote && <Quote />}
       </main>

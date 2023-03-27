@@ -18,3 +18,22 @@ export async function getCityByGeocode(latitude, longitude) {
   console.log(res.body.city)
   return res.body.city
 }
+
+export async function getWeatherByCity(city) {
+  const res = await request
+    .get(`https://weatherapi-com.p.rapidapi.com/current.json?q=${city}`)
+    .accept('application/json')
+    .set('X-RapidAPI-Key', '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61')
+    .set('X-RapidAPI-Host', 'weatherapi-com.p.rapidapi.com')
+  return res.body
+}
+
+export async function AutoComplete(input) {
+  const res = await request
+    .get(`https://weatherapi-com.p.rapidapi.com/search.json?q=${input}`)
+    .accept('application/json')
+    .set('X-RapidAPI-Key', '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61')
+    .set('X-RapidAPI-Host', 'weatherapi-com.p.rapidapi.com')
+  return res.body
+    
+}

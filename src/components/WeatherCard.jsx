@@ -11,7 +11,7 @@ const WeatherCard = ({ data }) => {
       <h2 className="text-2xl vsm:text-4xl my-6 flex items-center ">
         <Link
           className=" hover:underline hover:cursor-pointer"
-          reloadDocument
+          
           to={url}
         >
           {data.cityName}, {data.country}
