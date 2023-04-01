@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, {useEffect } from 'react'
 
 
 import Quote from '../components/Quote'
@@ -11,11 +11,11 @@ import { getWeatherByCity } from '../api/apiClient'
 const Home = ({weatherObj,setWeatherObj,showWeatherCard,setShowWeatherCard,setBgImg,setBgColor,showQuote,setShowQuote}) => {
 
 
+
   useEffect(() => {
 
-    setBgImg("should have bgImg")
+    setBgImg("url('bg-photos/bgImg.png')")
     setBgColor('')
-  
   }, [])
   
 

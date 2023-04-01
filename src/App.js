@@ -5,6 +5,7 @@ import WeatherDetails from './pages/WeatherDetails'
 import Home from './pages/Home'
 import Layout from './components/Layout'
 import Register from './pages/Register'
+import Login from './pages/Login'
 
 const App = () => {
 
@@ -31,7 +32,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home weatherObj={weatherObj} setWeatherObj={setWeatherObj} showWeatherCard={showWeatherCard} setShowWeatherCard={setShowWeatherCard} bgColor={bgColor} setBgColor={setBgColor} bgImg={bgImg} setBgImg={setBgImg} showQuote={showQuote} setShowQuote={setShowQuote} />}></Route>
         <Route path="/:cityname" element={<WeatherDetails setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
-        <Route path="/register" element={<Register />}></Route>
+        <Route path="/register" element={<Register setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
+        <Route path="/login" element={<Login setBgColor={setBgColor} setBgImg={setBgImg}/>}></Route>
       </Routes>
     </Layout>
   )

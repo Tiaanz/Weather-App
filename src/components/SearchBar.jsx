@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 
 import { AutoComplete } from '../api/apiClient'
+
+
 const SearchBar = ({searchWeather }) => {
 
 
@@ -13,6 +15,18 @@ const SearchBar = ({searchWeather }) => {
     e.preventDefault()
     searchWeather(searchPlace)
   }
+  
+
+  useEffect(() => {
+  let timer
+    if (searchPlace) {
+      timer = setInterval(() => {
+        console.log("update weatherCard weather every 60s");
+    searchWeather(searchPlace)
+   }, 60000);
+    }
+    return ()=> clearInterval(timer)
+  },[searchPlace])
 
 
   const formatResult = (item) => {
@@ -26,6 +40,8 @@ const SearchBar = ({searchWeather }) => {
   }
 
   const handleOnSearch = (string, results) => {
+
+    let debounce
     if (string) {
       setSearchPlace(string)
     } else {
@@ -44,7 +60,14 @@ const SearchBar = ({searchWeather }) => {
         console.log(error.message)
       }
     }
-    fetchData()
+    
+    // fetchData()
+    debounce = setTimeout(() => {
+      clearTimeout(debounce)
+      console.log("debounced");
+      fetchData()
+    }, 100);
+   
   }
 
   const handleOnSelect = (item) => {

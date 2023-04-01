@@ -35,5 +35,15 @@ export async function AutoComplete(input) {
     .set('X-RapidAPI-Key', '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61')
     .set('X-RapidAPI-Host', 'weatherapi-com.p.rapidapi.com')
   return res.body
-    
+}
+
+export async function getForecastByCity(cityname) {
+  const res = await request
+    .get(
+      `https://weatherapi-com.p.rapidapi.com/forecast.json?q=${cityname}&days=3`
+    )
+    .accept('application/json')
+    .set('X-RapidAPI-Key', '6cda750ddbmsh3e2d299b52be602p1f7255jsn589c028d6d61')
+    .set('X-RapidAPI-Host', 'weatherapi-com.p.rapidapi.com')
+  return res.body
 }

@@ -21,7 +21,7 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import { usePosition } from '../hooks/usePosition'
-import { getCityByGeocode } from '../api/apiClient'
+import { getCityByGeocode,getWeatherByCity } from '../api/apiClient'
 
 const style = {
   position: 'absolute',
@@ -45,6 +45,7 @@ const NavBar =  () => {
   const [opened, setOpened] = useState(false);
 
   const [currentCity, setCurrentCity] = useState('')
+  const [temp,setTemp]=useState('')
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -57,9 +58,22 @@ const NavBar =  () => {
 
   useEffect(() => {
    
-   fetchGeoCity()
+    fetchGeoCity()
+    async function fetchWeather(city) {
+      const weather = await getWeatherByCity(city)
+      setTemp(weather.current.temp_c);
+    }
+    let timer 
+    if (currentCity) {
+      fetchWeather(currentCity)
+      timer = setInterval(() => {
+      console.log("update nav weather every 60s");
+      fetchWeather(currentCity)
+     }, 60000); 
+    }
+   return ()=>clearInterval(timer)
 
-  }, [latitude,longitude])
+  }, [latitude,longitude,currentCity])
  
 
   async function fetchGeoCity() {
@@ -73,11 +87,14 @@ const NavBar =  () => {
       <nav className="flex items-center px-10 justify-between ">
         <Link to={'/'}>
           <div className="flex items-center">
-            <div className="w-14 h-14">
+            <div className="w-14 h-14 mt-3">
               <img src="assets/weather-icon.png" alt="weather-logo" />
             </div>
-            <div className="text-xl mx-3 hidden md:block ">Weather App</div>
-            <div className='flex items-center text-xl mx-10'><BsGeoAltFill className='mr-2  text-sky-500 text-xl'/>{currentCity}</div>
+            {
+              currentCity ? <div className='flex items-center text-xl mx-10'><BsGeoAltFill className='mr-2  text-sky-500 text-xl' />{currentCity} &nbsp;{temp}°C</div>
+                :<div className='flex items-center text-xl mx-10'>Have a nice day~</div>
+            }
+            
           </div>
         </Link>
         <div className="text-xl  flex items-center ">

@@ -27,6 +27,8 @@ const Layout = ({children,weatherObj,bgImg,setBgImg,bgColor,setBgColor}) => {
       } else if (weatherObj.condition.includes('Clear')) {
     
         setBgImg("url('bg-photos/clear.jpg')")
+      } else if (weatherObj.condition === " ") {
+        setBgImg("url('bg-photos/bgImg.png')")
       }
     } else {
       setBgColor(bgColor)

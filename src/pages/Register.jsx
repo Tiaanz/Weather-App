@@ -12,14 +12,19 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-
+import { Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import weatherImg from '../data/weather.json'
 import { addUser } from '../api/apiClient'
 import { useNavigate } from 'react-router-dom'
 
 const theme = createTheme()
 
-export default function Register() {
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+export default function Register({setBgColor,setBgImg}) {
 
 
   const [emailMessage, setEmailMessage] = React.useState('')
@@ -27,9 +32,12 @@ export default function Register() {
   const [emailInput, setEmailInput] = React.useState('')
   const [pswInput,setPswInput]=React.useState('')
   const navigate = useNavigate()
+  const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    document.body.style.backgroundImage = `url(${weatherImg.bgImg})`
+    setBgImg("")
+    setBgColor('rgb(219 234 254)')  
+   
  
   }, [])
 
@@ -46,7 +54,8 @@ const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
     const data = new FormData(event.currentTarget)
     
     if (data.get('email').match(validEmailRegex) && data.get('password').match(validPasswordRegex)) {
-     
+      let timer
+      clearTimeout(timer)
       const newUser = {
         firstName: data.get('firstName'),
         lastName: data.get('lastName'),
@@ -55,7 +64,11 @@ const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
       }
       console.log(newUser)
       await addUser(newUser)
-      navigate('/')
+      setOpen(true);
+     timer= setTimeout(() => {
+       navigate('/login')
+      }, 3000);
+     
     } else {
       if (!data.get('email').match(validEmailRegex)&&!data.get('password').match(validPasswordRegex)) {
         setEmailMessage(() => 'Please enter a correct email address')
@@ -69,6 +82,14 @@ const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
       }
     }
   }
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -176,6 +197,11 @@ const validPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
           </Box>
         </Box>
       </Container>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          You have been successfully registered!
+        </Alert>
+      </Snackbar>
     </ThemeProvider>
   )
 }
