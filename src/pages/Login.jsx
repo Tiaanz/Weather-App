@@ -13,23 +13,38 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
-import { Link as RLink } from 'react-router-dom'
+import { Link as RLink,useNavigate } from 'react-router-dom'
+import { authUser } from '../api/apiClient'
 
 const theme = createTheme()
 
-export default function LogIn({ setBgColor, setBgImg }) {
+export default function LogIn({ setBgColor, setBgImg, setLoggedName }) {
+  
+
+  const [errorMessage,setErrorMessage]=React.useState('')
+  const nav=useNavigate()
   React.useEffect(() => {
     setBgImg('')
     setBgColor('rgb(219 234 254)')
   }, [])
 
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async(event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    console.log({
+    const loggedUser={
       email: data.get('email'),
       password: data.get('password'),
-    })
+    }
+    const res=await authUser(loggedUser)
+    console.log(res);
+    if (res.firstName) {
+      localStorage.setItem("username", res.firstName)
+      // setLoggedName(localStorage.getItem("username"))
+       nav('/')
+    } else {
+      setErrorMessage("Incorrect email or password")
+    }
   }
 
   return (
@@ -70,6 +85,7 @@ export default function LogIn({ setBgColor, setBgImg }) {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={()=>setErrorMessage('')}
             />
             <TextField
               margin="normal"
@@ -80,7 +96,12 @@ export default function LogIn({ setBgColor, setBgImg }) {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={()=>setErrorMessage('')}
             />
+            {
+              errorMessage && <p className='text-red-500'>Incorrect email or password</p>
+            }
+            
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

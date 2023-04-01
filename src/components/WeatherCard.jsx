@@ -6,6 +6,11 @@ const WeatherCard = ({ data }) => {
   const [toggleFav, setToggleFav] = useState(false)
 
   const url = `${data.cityName}_${data.country.trim()}`
+
+function addToFav(city) {
+  setToggleFav(preState => !preState)
+}
+
   return (
     <div className=" my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100 bg-white opacity-70">
       <h2 className="text-2xl vsm:text-4xl my-6 flex items-center ">
@@ -16,7 +21,7 @@ const WeatherCard = ({ data }) => {
         >
           {data.cityName}, {data.country}
         </Link>
-        <div className="ml-10" onClick={() => setToggleFav(preState => !preState)}>
+        <div className="ml-10" onClick={() =>addToFav(data.cityName)}>
           <svg
             width="30"
             height="30"

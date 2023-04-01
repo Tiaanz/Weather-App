@@ -4,7 +4,7 @@ import Footer from './Footer'
 
 import weatherImg from '../data/weather.json'
 
-const Layout = ({children,weatherObj,bgImg,setBgImg,bgColor,setBgColor}) => {
+const Layout = ({children,weatherObj,bgImg,setBgImg,bgColor,setBgColor,loggedName,setLoggedName}) => {
  
   
   useEffect(() => {
@@ -40,7 +40,7 @@ const Layout = ({children,weatherObj,bgImg,setBgImg,bgColor,setBgColor}) => {
   return (
     
       <div className="relative min-h-screen bg-cover" style={{ backgroundImage: bgImg,backgroundColor:bgColor }}>
-          <NavBar />
+      <NavBar loggedName={loggedName} setLoggedName={setLoggedName} />
           {children}
       {/* props.children 代表Layout的标签体内容，也就是<Routes> */}
       <Footer />

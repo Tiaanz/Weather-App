@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BiLogIn } from 'react-icons/bi'
 import { Link } from 'react-router-dom'
-import {BsGeoAltFill} from 'react-icons/bs'
+import { BsGeoAltFill } from 'react-icons/bs'
 
 // import classNames from 'classnames';
 
@@ -12,6 +12,10 @@ import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import { IconButton } from '@mui/material'
+import { Menu, MenuItem, Divider, ListItemIcon } from '@mui/material'
+import { Logout } from '@mui/icons-material'
+import LocationCityIcon from '@mui/icons-material/LocationCity'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -21,7 +25,7 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import { usePosition } from '../hooks/usePosition'
-import { getCityByGeocode,getWeatherByCity } from '../api/apiClient'
+import { getCityByGeocode, getWeatherByCity, authUser } from '../api/apiClient'
 
 const style = {
   position: 'absolute',
@@ -36,45 +40,55 @@ const style = {
 }
 const theme = createTheme()
 
-const NavBar =  () => {
+const NavBar = ({ loggedName, setLoggedName }) => {
   const { latitude, longitude, error } = usePosition()
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const [opened, setOpened] = useState(false);
+  // const [opened, setOpened] = useState(false)
 
   const [currentCity, setCurrentCity] = useState('')
-  const [temp,setTemp]=useState('')
+  const [temp, setTemp] = useState('')
 
-  const handleSubmit = (event) => {
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const logged=localStorage.getItem('username')
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    console.log({
+    const loggedUser = {
       email: data.get('email'),
       password: data.get('password'),
-    })
+    }
+    const res = await authUser(loggedUser)
+    console.log(res)
+    if (res.firstName) {
+      localStorage.setItem("username", res.firstName)
+      // setLogged(localStorage.getItem("username"))
+      setOpen(false)
+    } else {
+      setErrorMessage('Incorrect email or password')
+    }
   }
 
   useEffect(() => {
-   
     fetchGeoCity()
     async function fetchWeather(city) {
       const weather = await getWeatherByCity(city)
-      setTemp(weather.current.temp_c);
+      setTemp(weather.current.temp_c)
     }
-    let timer 
+    let timer
     if (currentCity) {
       fetchWeather(currentCity)
       timer = setInterval(() => {
-      console.log("update nav weather every 60s");
-      fetchWeather(currentCity)
-     }, 60000); 
+        console.log('update nav weather every 60s')
+        fetchWeather(currentCity)
+      }, 60000)
     }
-   return ()=>clearInterval(timer)
-
-  }, [latitude,longitude,currentCity])
- 
+    return () => clearInterval(timer)
+  }, [latitude, longitude, currentCity])
 
   async function fetchGeoCity() {
     const city = await getCityByGeocode(latitude, longitude)
@@ -82,40 +96,135 @@ const NavBar =  () => {
     setCurrentCity(() => city)
   }
 
+  
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const openMenu = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+   
+  }
+
+  const handleLogout = () => {
+    // setLogged('')
+    localStorage.removeItem('username')
+  }
+
   return (
     <div>
-      <nav className="flex items-center px-10 justify-between ">
+      <nav className="flex items-center px-10 justify-between">
         <Link to={'/'}>
           <div className="flex items-center">
             <div className="w-14 h-14 mt-3">
               <img src="assets/weather-icon.png" alt="weather-logo" />
             </div>
-            {
-              currentCity ? <div className='flex items-center text-xl mx-10'><BsGeoAltFill className='mr-2  text-sky-500 text-xl' />{currentCity} &nbsp;{temp}°C</div>
-                :<div className='flex items-center text-xl mx-10'>Have a nice day~</div>
-            }
-            
+            {currentCity ? (
+              <div className="flex items-center text-xl mx-10">
+                <BsGeoAltFill className="mr-2  text-sky-500 text-xl" />
+                {currentCity} &nbsp;{temp}°C
+              </div>
+            ) : (
+              <div className="flex items-center text-xl mx-10">
+                Have a nice day~
+              </div>
+            )}
           </div>
         </Link>
         <div className="text-xl  flex items-center ">
-        <div className="tham tham-e-squeeze tham-w-6 tham-active:opened sm:hidden">
-      <div className="tham-box">
-        <div className="tham-inner" />
-      </div>
-    </div>
-          <BiLogIn className="mx-3 text-2xl hidden sm:block" />
-          <button
-            onClick={handleOpen}
-            className="sm:text-base text-sm hidden sm:block rounded-full bg-white px-4 py-1 hover:cursor-pointer shadow-md hover:ring ring-white"
-          >
-            Log in{' '}
-          </button>
+          <div className="tham tham-e-squeeze tham-w-6 tham-active:opened sm:hidden">
+            <div className="tham-box">
+              <div className="tham-inner" />
+            </div>
+          </div>
 
-          <Link to={'/register'}>
-            <button className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md">
-              Register
-            </button>
-          </Link>
+          {logged ? (
+            <>
+              <span className=" bg-white opacity-70 shadow-neutral-100 p-1">
+                Kia ora, {logged}
+              </span>
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <Avatar sx={{ width: 32, height: 32 }}>
+                  {Array.from(logged)[0]}
+                </Avatar>
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={openMenu}
+                onClose={handleCloseMenu}
+                onClick={handleCloseMenu}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: 'visible',
+                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                    mt: 1.5,
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    '&:before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: 'background.paper',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <MenuItem onClick={handleCloseMenu}>
+                  <Avatar /> Profile
+                </MenuItem>
+                <MenuItem onClick={handleCloseMenu}>
+                  <Avatar>
+                    <LocationCityIcon />
+                  </Avatar>
+                  My favorite cities
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              <BiLogIn className="mx-3 text-2xl hidden sm:block" />
+              <button
+                onClick={handleOpen}
+                className="sm:text-base text-sm hidden sm:block rounded-full bg-white px-4 py-1 hover:cursor-pointer shadow-md hover:ring ring-white"
+              >
+                Log in
+              </button>
+              <Link to={'/register'}>
+                <button className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md">
+                  Register
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -153,6 +262,7 @@ const NavBar =  () => {
                     name="email"
                     autoComplete="email"
                     autoFocus
+                    onChange={() => setErrorMessage('')}
                   />
                   <TextField
                     margin="normal"
@@ -163,7 +273,11 @@ const NavBar =  () => {
                     type="password"
                     id="password"
                     autoComplete="current-password"
+                    onChange={() => setErrorMessage('')}
                   />
+                  {errorMessage && (
+                    <p className="text-red-500">Incorrect email or password</p>
+                  )}
                   <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}
                     label="Remember me"
