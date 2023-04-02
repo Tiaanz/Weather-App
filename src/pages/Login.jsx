@@ -40,6 +40,9 @@ export default function LogIn({ setBgColor, setBgImg, setLoggedName }) {
     console.log(res);
     if (res.firstName) {
       localStorage.setItem("username", res.firstName)
+      localStorage.setItem("userId", res.id)
+      localStorage.setItem("favCities", res.favCity)
+      console.log(res.favCity);
       // setLoggedName(localStorage.getItem("username"))
        nav('/')
     } else {

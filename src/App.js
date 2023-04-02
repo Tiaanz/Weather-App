@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Layout from './components/Layout'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import FavCities from './pages/FavCities'
 
 const App = () => {
 
@@ -30,13 +31,15 @@ const App = () => {
 
 
 
+
   return (
     <Layout weatherObj={weatherObj} bgImg={bgImg} setBgImg={setBgImg} bgColor={bgColor} setBgColor={setBgColor} >
       <Routes>
         <Route path="/" element={<Home weatherObj={weatherObj} setWeatherObj={setWeatherObj} showWeatherCard={showWeatherCard} setShowWeatherCard={setShowWeatherCard} bgColor={bgColor} setBgColor={setBgColor} bgImg={bgImg} setBgImg={setBgImg} showQuote={showQuote} setShowQuote={setShowQuote} />}></Route>
         <Route path="/:cityname" element={<WeatherDetails setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
         <Route path="/register" element={<Register setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
-        <Route path="/login" element={<Login setBgColor={setBgColor} setBgImg={setBgImg}  />}></Route>
+        <Route path="/login" element={<Login setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
+        <Route path="/favorite_cities" element={<FavCities setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
       </Routes>
     </Layout>
   )

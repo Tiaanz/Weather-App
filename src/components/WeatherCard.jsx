@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { addFavCity,updateFavCity} from '../api/apiClient'
 
 
 const WeatherCard = ({ data }) => {
@@ -7,11 +8,42 @@ const WeatherCard = ({ data }) => {
 
   const url = `${data.cityName}_${data.country.trim()}`
 
-function addToFav(city) {
-  setToggleFav(preState => !preState)
+  const id = localStorage.getItem("userId")
+  let favCitiesArr
+  const favCities = localStorage.getItem('favCities')
+  if (favCities && favCities.includes(',')) {
+    favCitiesArr=favCities.split(',')
+  } else {
+    favCitiesArr=[favCities]
+  }
+
+  useEffect(() => {
+    console.log(favCitiesArr.some(city=>city===data.cityName));
+    setToggleFav(()=>favCitiesArr.some(city=>city===data.cityName))
+  },[data.cityName])
+
+
+  const nav=useNavigate()
+  
+  async function addToFav(city) {
+    if (id) {
+      if (toggleFav) {
+        setToggleFav(preState => !preState)
+       const newFavCity= await updateFavCity(id, city)
+        localStorage.setItem('favCities',newFavCity.favCity)
+      } else {
+        setToggleFav(preState => !preState)
+        const newFavCity = await addFavCity(id, city)
+        localStorage.setItem('favCities',newFavCity.favCity)
+      }
+    } else {
+      nav('/login')
+  }
+  
 }
 
   return (
+    
     <div className=" my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100 bg-white opacity-70">
       <h2 className="text-2xl vsm:text-4xl my-6 flex items-center ">
         <Link
@@ -143,7 +175,8 @@ function addToFav(city) {
       <span className="flex justify-end text-sm vsm:text-md">
         Local time: {data.time}
       </span>
-    </div>
+      </div>
+      
   )
 }
 
