@@ -29,8 +29,6 @@ export default function Register({setBgColor,setBgImg}) {
 
   const [emailMessage, setEmailMessage] = React.useState('')
   const [passwordMessage, setPswMessage] = React.useState('')
-  const [emailInput, setEmailInput] = React.useState('')
-  const [pswInput,setPswInput]=React.useState('')
   const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
 
