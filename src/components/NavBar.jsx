@@ -311,7 +311,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                       </Link>
                     </Grid>
                     <Grid item>
-                      <Link to={'/register'}>
+                      <Link to={'/register'} onClick={handleClose}>
                         {"Don't have an account? Register"}
                       </Link>
                     </Grid>
