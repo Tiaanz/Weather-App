@@ -74,6 +74,10 @@ const SearchBar = ({searchWeather }) => {
     searchWeather(item.name)
   }
 
+  const handleOnClear = () => {
+    console.log("Cleared");
+  };
+
 
   return (
     <div className="z-10 w-3/4 sm:w-3/5 md:w-2/4  lg:w-2/5 focus:outline-none">
@@ -84,7 +88,7 @@ const SearchBar = ({searchWeather }) => {
           onSearch={handleOnSearch}
           onSelect={handleOnSelect}
           formatResult={formatResult}
-          onClear
+          onClear={handleOnClear}
           autoFocus
           styling={{fontSize:'18px', border:'none'}}
         />

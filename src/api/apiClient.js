@@ -10,9 +10,26 @@ export async function addUser(newUser) {
 }
 
 export async function authUser(loggedUser) {
-
   const res = await request.post('/api/v1/users/login').send(loggedUser)
   return res.body
+}
+
+export async function addFavCity(id, city) {
+  const res = await request.patch('/api/v1/users/favCity').send({ id, city })
+  return res.body
+}
+
+export async function updateFavCity(id,city) {
+  const res = await request.delete('/api/v1/users/favCity').send({ id, city })
+  return res.body
+}
+
+export async function getFavCitiesById(id) {
+  const res = await request
+    .get(`/api/v1/users/favCity/${id}`)
+    .accept('application/json')
+  const cities=res.body.favCity.split(',')
+  return cities
 }
 
 export async function getCityByGeocode(latitude, longitude) {

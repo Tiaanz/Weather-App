@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { BiLogIn } from 'react-icons/bi'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { BsGeoAltFill } from 'react-icons/bs'
 
 // import classNames from 'classnames';
@@ -25,7 +25,7 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import { usePosition } from '../hooks/usePosition'
-import { getCityByGeocode, getWeatherByCity, authUser } from '../api/apiClient'
+import { getCityByGeocode, getWeatherByCity, authUser,getFavCitiesById  } from '../api/apiClient'
 
 const style = {
   position: 'absolute',
@@ -43,6 +43,8 @@ const theme = createTheme()
 const NavBar = ({ loggedName, setLoggedName }) => {
   const { latitude, longitude, error } = usePosition()
 
+  const nav=useNavigate()
+
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -53,7 +55,8 @@ const NavBar = ({ loggedName, setLoggedName }) => {
 
   const [errorMessage, setErrorMessage] = useState('')
 
-  const logged=localStorage.getItem('username')
+  const logged = localStorage.getItem('username')
+  const id=localStorage.getItem('userId')
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -66,6 +69,8 @@ const NavBar = ({ loggedName, setLoggedName }) => {
     console.log(res)
     if (res.firstName) {
       localStorage.setItem("username", res.firstName)
+      localStorage.setItem("userId", res.id)
+      localStorage.setItem("favCities", res.favCity)
       // setLogged(localStorage.getItem("username"))
       setOpen(false)
     } else {
@@ -110,6 +115,15 @@ const NavBar = ({ loggedName, setLoggedName }) => {
   const handleLogout = () => {
     // setLogged('')
     localStorage.removeItem('username')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('favCities')
+    nav(0)
+  }
+
+ async function showFavCities() {
+    if (id) {
+      nav('/favorite_cities')
+    }
   }
 
   return (
@@ -194,7 +208,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 <MenuItem onClick={handleCloseMenu}>
                   <Avatar /> Profile
                 </MenuItem>
-                <MenuItem onClick={handleCloseMenu}>
+                <MenuItem onClick={showFavCities}>
                   <Avatar>
                     <LocationCityIcon />
                   </Avatar>

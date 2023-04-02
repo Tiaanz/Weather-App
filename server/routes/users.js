@@ -10,7 +10,16 @@ router.get('/', async (req, res) => {
     const users = await db.getAllUsers()
     res.json(users)
   } catch (error) {
-    console.log(error)
+    res.status(500).json({ error: 'Database error' })
+  }
+})
+
+//get user by ID
+router.get('/favCity/:id', async (req, res) => {
+  try {
+    const user = await db.getUserById(Number(req.params.id))
+    res.json(user)
+  } catch (error) {
     res.status(500).json({ error: 'Database error' })
   }
 })
@@ -30,6 +39,8 @@ router.post('/', async (req, res) => {
   }
 })
 
+
+//login
 router.post('/login', async (req, res) => {
   try {
     
@@ -43,6 +54,37 @@ router.post('/login', async (req, res) => {
       res.json({message: 'incorrect password'})
   }
 
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' })
+  }
+})
+
+//add favorite city
+router.patch('/favCity', async (req, res) => {
+  try {
+
+    const user=await db.getUserById(Number(req.body.id))
+    const favCities = user.favCity.split(',')
+    const city=favCities.find(item=>item===req.body.city)
+    const updatedUser={...user,favCity:user.favCity===null?req.body.city:city?user.favCity:user.favCity+','+req.body.city}
+    await db.updateFavCity(updatedUser)
+    res.status(200).json(updatedUser)
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' })
+  }
+})
+
+//delete favorite city
+router.delete('/favCity', async (req, res) => {
+  try {
+    
+    const user = await db.getUserById(Number(req.body.id))
+    const favCities = user.favCity.split(',')
+    const citiesArr = favCities.filter(item => item !== req.body.city)
+    const cities=citiesArr.toString()
+    const updatedUser={...user,favCity:cities}
+    await db.updateFavCity(updatedUser)
+    res.status(200).json(updatedUser)
   } catch (error) {
     res.status(500).json({ error: 'Database error' })
   }
