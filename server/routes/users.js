@@ -62,9 +62,14 @@ router.post('/login', async (req, res) => {
 //add favorite city
 router.patch('/favCity', async (req, res) => {
   try {
-
-    const user=await db.getUserById(Number(req.body.id))
-    const favCities = user.favCity.split(',')
+let favCities
+    const user = await db.getUserById(Number(req.body.id))
+    if (user.favCity && user.favCity.includes(',')) {
+      favCities = user.favCity.split(',')
+    } else {
+      favCities=[user.favCity]
+    }
+    
     const city=favCities.find(item=>item===req.body.city)
     const updatedUser={...user,favCity:user.favCity===null?req.body.city:city?user.favCity:user.favCity+','+req.body.city}
     await db.updateFavCity(updatedUser)
