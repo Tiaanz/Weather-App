@@ -70,8 +70,9 @@ let favCities
       favCities=[user.favCity]
     }
     
-    const city=favCities.find(item=>item===req.body.city)
-    const updatedUser={...user,favCity:user.favCity===null?req.body.city:city?user.favCity:user.favCity+','+req.body.city}
+    const city = favCities.find(item => item === req.body.city)
+    
+    const updatedUser={...user,favCity:!user.favCity?req.body.city:city?user.favCity:user.favCity+','+req.body.city}
     await db.updateFavCity(updatedUser)
     res.status(200).json(updatedUser)
   } catch (error) {
@@ -86,7 +87,7 @@ router.delete('/favCity', async (req, res) => {
     const user = await db.getUserById(Number(req.body.id))
     const favCities = user.favCity.split(',')
     const citiesArr = favCities.filter(item => item !== req.body.city)
-    const cities=citiesArr.toString()
+    const cities = citiesArr.toString()
     const updatedUser={...user,favCity:cities}
     await db.updateFavCity(updatedUser)
     res.status(200).json(updatedUser)
