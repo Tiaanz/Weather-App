@@ -73,6 +73,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
       localStorage.setItem("favCities", res.favCity)
       // setLogged(localStorage.getItem("username"))
       setOpen(false)
+      nav('/')
     } else {
       setErrorMessage('Incorrect email or password')
     }
@@ -159,6 +160,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 Kia ora, {logged}
               </span>
               <IconButton
+                className='hover:ring-2 ring-slate-300'
                 onClick={handleClick}
                 size="small"
                 sx={{ ml: 2 }}
@@ -166,7 +168,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
               >
-                <Avatar sx={{ width: 32, height: 32 }}>
+                <Avatar sx={{ width: 40, height: 40 }}>
                   {Array.from(logged)[0]}
                 </Avatar>
               </IconButton>
