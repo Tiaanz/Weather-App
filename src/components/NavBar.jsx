@@ -3,7 +3,6 @@ import { BiLogIn } from 'react-icons/bi'
 import { Link, useNavigate } from 'react-router-dom'
 import { BsGeoAltFill } from 'react-icons/bs'
 
-// import classNames from 'classnames';
 
 import Modal from '@mui/material/Modal'
 import Avatar from '@mui/material/Avatar'
