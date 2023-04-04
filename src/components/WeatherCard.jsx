@@ -7,6 +7,7 @@ const WeatherCard = ({ data }) => {
   const [toggleFav, setToggleFav] = useState(false)
 
   const url = `${data.cityName}_${data.country.trim()}`
+  const nav=useNavigate()
 
   const id = localStorage.getItem("userId")
   let favCitiesArr
@@ -17,13 +18,14 @@ const WeatherCard = ({ data }) => {
     favCitiesArr=[favCities]
   }
 
+
+  //check if the city has been added to favorite
   useEffect(() => {
     console.log(favCitiesArr.some(city=>city===data.cityName));
     setToggleFav(()=>favCitiesArr.some(city=>city===data.cityName))
   },[favCities])
 
 
-  const nav=useNavigate()
   
   async function addToFav(city) {
     if (id) {
