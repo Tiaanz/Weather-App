@@ -117,7 +117,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
     localStorage.removeItem('username')
     localStorage.removeItem('userId')
     localStorage.removeItem('favCities')
-    nav(0)
+    nav('/')
   }
 
  async function showFavCities() {

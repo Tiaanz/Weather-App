@@ -20,7 +20,7 @@ const WeatherCard = ({ data }) => {
   useEffect(() => {
     console.log(favCitiesArr.some(city=>city===data.cityName));
     setToggleFav(()=>favCitiesArr.some(city=>city===data.cityName))
-  },[data.cityName])
+  },[favCities])
 
 
   const nav=useNavigate()
