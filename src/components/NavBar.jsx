@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { useAuth0 } from '@auth0/auth0-react'
 import { BiLogIn } from 'react-icons/bi'
 import { Link, useNavigate } from 'react-router-dom'
 import { BsGeoAltFill } from 'react-icons/bs'
-
 
 import Modal from '@mui/material/Modal'
 import Avatar from '@mui/material/Avatar'
@@ -24,7 +24,12 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import { usePosition } from '../hooks/usePosition'
-import { getCityByGeocode, getWeatherByCity, authUser,getFavCitiesById  } from '../api/apiClient'
+import {
+  getCityByGeocode,
+  getWeatherByCity,
+  authUser,
+  getFavCitiesById,
+} from '../api/apiClient'
 
 const style = {
   position: 'absolute',
@@ -41,8 +46,10 @@ const theme = createTheme()
 
 const NavBar = ({ loggedName, setLoggedName }) => {
   const { latitude, longitude, error } = usePosition()
+  const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
+    useAuth0()
 
-  const nav=useNavigate()
+  const nav = useNavigate()
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -55,7 +62,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
   const [errorMessage, setErrorMessage] = useState('')
 
   const logged = localStorage.getItem('username')
-  const id=localStorage.getItem('userId')
+  const id = localStorage.getItem('userId')
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -67,9 +74,9 @@ const NavBar = ({ loggedName, setLoggedName }) => {
     const res = await authUser(loggedUser)
     console.log(res)
     if (res.firstName) {
-      localStorage.setItem("username", res.firstName)
-      localStorage.setItem("userId", res.id)
-      localStorage.setItem("favCities", res.favCity)
+      localStorage.setItem('username', res.firstName)
+      localStorage.setItem('userId', res.id)
+      localStorage.setItem('favCities', res.favCity)
       // setLogged(localStorage.getItem("username"))
       setOpen(false)
       nav('/')
@@ -101,7 +108,6 @@ const NavBar = ({ loggedName, setLoggedName }) => {
     setCurrentCity(() => city)
   }
 
-  
   const [anchorEl, setAnchorEl] = React.useState(null)
   const openMenu = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -109,7 +115,6 @@ const NavBar = ({ loggedName, setLoggedName }) => {
   }
   const handleCloseMenu = () => {
     setAnchorEl(null)
-   
   }
 
   const handleLogout = () => {
@@ -120,8 +125,8 @@ const NavBar = ({ loggedName, setLoggedName }) => {
     nav('/')
   }
 
- async function showFavCities() {
-    if (id) {
+  async function showFavCities() {
+    if (isAuthenticated) {
       nav('/favorite_cities')
     }
   }
@@ -153,13 +158,13 @@ const NavBar = ({ loggedName, setLoggedName }) => {
             </div>
           </div>
 
-          {logged ? (
+          {isAuthenticated ? (
             <>
               <span className=" bg-white opacity-70 shadow-neutral-100 p-1">
-                Kia ora, {logged}
+                Kia ora, {user.name}
               </span>
               <IconButton
-                className='hover:ring-2 ring-slate-300'
+                className="hover:ring-2 ring-slate-300"
                 onClick={handleClick}
                 size="small"
                 sx={{ ml: 2 }}
@@ -167,8 +172,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
               >
-                <Avatar sx={{ width: 40, height: 40 }}>
-                  {Array.from(logged)[0]}
+                <Avatar sx={{ width: 40, height: 40 }} src={user?.picture}>
                 </Avatar>
               </IconButton>
               <Menu
@@ -216,7 +220,13 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                   My favorite cities
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleLogout}>
+                <MenuItem
+                  onClick={() =>
+                    logout({
+                      logoutParams: { returnTo: window.location.origin },
+                    })
+                  }
+                >
                   <ListItemIcon>
                     <Logout fontSize="small" />
                   </ListItemIcon>
@@ -228,7 +238,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
             <>
               <BiLogIn className="mx-3 text-2xl hidden sm:block" />
               <button
-                onClick={handleOpen}
+                onClick={() => loginWithRedirect()}
                 className="sm:text-base text-sm hidden sm:block rounded-full bg-white px-4 py-1 hover:cursor-pointer shadow-md hover:ring ring-white"
               >
                 Log in

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { addFavCity,updateFavCity} from '../api/apiClient'
-
+import { useAuth0 } from '@auth0/auth0-react'
 
 const WeatherCard = ({ data }) => {
   const [toggleFav, setToggleFav] = useState(false)
+
+  const {isAuthenticated,loginWithRedirect}=useAuth0()
 
   const url = `${data.cityName}_${data.country.trim()}`
   const nav=useNavigate()
@@ -28,7 +30,7 @@ const WeatherCard = ({ data }) => {
 
   
   async function addToFav(city) {
-    if (id) {
+    if (isAuthenticated) {
       if (toggleFav) {
         setToggleFav(preState => !preState)
        const newFavCity= await updateFavCity(id, city)
@@ -39,7 +41,7 @@ const WeatherCard = ({ data }) => {
         localStorage.setItem('favCities',newFavCity.favCity)
       }
     } else {
-      nav('/login')
+    loginWithRedirect()
   }
   
 }
