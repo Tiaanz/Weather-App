@@ -1,4 +1,6 @@
 import request from 'superagent'
+// import { config } from "dotenv";
+// config()
 
 export async function getUserData() {
   const res = await request.get('/api/v1/users').accept('application/json')
