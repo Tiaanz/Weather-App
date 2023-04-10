@@ -15,6 +15,7 @@ import { IconButton } from '@mui/material'
 import { Menu, MenuItem, Divider, ListItemIcon } from '@mui/material'
 import { Logout } from '@mui/icons-material'
 import LocationCityIcon from '@mui/icons-material/LocationCity'
+import { useUserStore } from '../userStore'
 
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -44,7 +45,7 @@ const style = {
 }
 const theme = createTheme()
 
-const NavBar = ({ loggedName, setLoggedName }) => {
+const NavBar = () => {
   const { latitude, longitude, error } = usePosition()
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
     useAuth0()
@@ -54,36 +55,12 @@ const NavBar = ({ loggedName, setLoggedName }) => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  // const [opened, setOpened] = useState(false)
+ 
 
   const [currentCity, setCurrentCity] = useState('')
   const [temp, setTemp] = useState('')
 
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const logged = localStorage.getItem('username')
-  const id = localStorage.getItem('userId')
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const loggedUser = {
-      email: data.get('email'),
-      password: data.get('password'),
-    }
-    const res = await authUser(loggedUser)
-    console.log(res)
-    if (res.firstName) {
-      localStorage.setItem('username', res.firstName)
-      localStorage.setItem('userId', res.id)
-      localStorage.setItem('favCities', res.favCity)
-      // setLogged(localStorage.getItem("username"))
-      setOpen(false)
-      nav('/')
-    } else {
-      setErrorMessage('Incorrect email or password')
-    }
-  }
+  const currentUser = useUserStore((state) => state.currentUser)
 
   useEffect(() => {
     fetchGeoCity()
@@ -118,11 +95,11 @@ const NavBar = ({ loggedName, setLoggedName }) => {
   }
 
   const handleLogout = () => {
-    // setLogged('')
-    localStorage.removeItem('username')
-    localStorage.removeItem('userId')
+
+    localStorage.removeItem('firstName')
+    localStorage.removeItem('lastName')
     localStorage.removeItem('favCities')
-    nav('/')
+    
   }
 
   async function showFavCities() {
@@ -158,10 +135,10 @@ const NavBar = ({ loggedName, setLoggedName }) => {
             </div>
           </div>
 
-          {isAuthenticated ? (
+          {isAuthenticated && !isLoading && currentUser.firstName ? (
             <>
               <span className=" bg-white opacity-70 shadow-neutral-100 p-1">
-                Kia ora, {user.name}
+                Kia ora, {currentUser.firstName}
               </span>
               <IconButton
                 className="hover:ring-2 ring-slate-300"
@@ -172,7 +149,9 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
               >
-                <Avatar sx={{ width: 40, height: 40 }} src={user?.picture}>
+                <Avatar sx={{ width: 40, height: 40 }}>
+                  {currentUser.firstName && Array.from(currentUser.firstName)[0]}
+                  
                 </Avatar>
               </IconButton>
               <Menu
@@ -210,9 +189,10 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem onClick={handleCloseMenu}>
+                <Link to={'/profile'}>
+                <MenuItem>
                   <Avatar /> Profile
-                </MenuItem>
+                </MenuItem></Link> 
                 <MenuItem onClick={showFavCities}>
                   <Avatar>
                     <LocationCityIcon />
@@ -221,10 +201,12 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 </MenuItem>
                 <Divider />
                 <MenuItem
-                  onClick={() =>
+                  onClick={() => {
                     logout({
                       logoutParams: { returnTo: window.location.origin },
-                    })
+                    });handleLogout()
+                  }
+                    
                   }
                 >
                   <ListItemIcon>
@@ -243,96 +225,15 @@ const NavBar = ({ loggedName, setLoggedName }) => {
               >
                 Log in
               </button>
-              <Link to={'/register'}>
-                <button className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md">
+              
+                <button onClick={()=>loginWithRedirect()} className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md">
                   Register
                 </button>
-              </Link>
+              
             </>
           )}
         </div>
       </nav>
-
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 4,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                  <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                  Log in
-                </Typography>
-                <Box
-                  component="form"
-                  onSubmit={handleSubmit}
-                  noValidate
-                  sx={{ mt: 1 }}
-                >
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    autoFocus
-                    onChange={() => setErrorMessage('')}
-                  />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    onChange={() => setErrorMessage('')}
-                  />
-                  {errorMessage && (
-                    <p className="text-red-500">Incorrect email or password</p>
-                  )}
-                  <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Log In
-                  </Button>
-                  <Grid container>
-                    <Grid item xs>
-                      <Link href="#" variant="body2">
-                        Forgot password?
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link to={'/register'} onClick={handleClose}>
-                        {"Don't have an account? Register"}
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Box>
-            </Container>
-          </ThemeProvider>
-        </Box>
-      </Modal>
     </div>
   )
 }

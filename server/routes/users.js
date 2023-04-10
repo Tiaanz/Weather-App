@@ -15,9 +15,19 @@ router.get('/', async (req, res) => {
 })
 
 //get user by ID
-router.get('/favCity/:id', async (req, res) => {
+router.get('/user/:id', async (req, res) => {
   try {
     const user = await db.getUserById(Number(req.params.id))
+    res.json(user)
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' })
+  }
+})
+
+//get user by authId
+router.get('/user-auth/:id', async (req, res) => {
+  try {
+    const user = await db.getUserByAuthId(req.params.id)
     res.json(user)
   } catch (error) {
     res.status(500).json({ error: 'Database error' })
@@ -27,11 +37,8 @@ router.get('/favCity/:id', async (req, res) => {
 //add new user
 router.post('/', async (req, res) => {
   try {
-    // const salt = await bcrypt.genSalt()
-    const hashedPwd = await bcrypt.hash(req.body.password, 10)
-
-    const newUser = {...req.body,password:hashedPwd}
-    await db.addUser(newUser)
+    
+    await db.addUser(req.body)
     res.status(200).json({ message: 'new user has been added' })
   } catch (error) {
    

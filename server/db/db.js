@@ -7,7 +7,8 @@ module.exports = {
   addUser,
   getUserByEmail,
   updateFavCity,
-  getUserById
+  getUserById,
+  getUserByAuthId
 }
 
 function getAllUsers(db=connection) {
@@ -16,6 +17,10 @@ function getAllUsers(db=connection) {
 
 function getUserByEmail(email,db=connection) {
   return db('users').where('email',email).select().first()
+}
+
+function getUserByAuthId(id,db=connection) {
+  return db('users').where('auth0Id',id).select().first()
 }
 
 function getUserById(id,db=connection) {
