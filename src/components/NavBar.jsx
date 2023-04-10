@@ -86,6 +86,7 @@ const NavBar = ({ loggedName, setLoggedName }) => {
   }
 
   useEffect(() => {
+    console.log(user);
     fetchGeoCity()
     async function fetchWeather(city) {
       const weather = await getWeatherByCity(city)

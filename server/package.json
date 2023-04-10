@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "kill-port": "^2.0.1",
     "nodemon": "^2.0.21"
   }
 }

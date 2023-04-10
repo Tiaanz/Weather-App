@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 })
 
 //get user by ID
-router.get('/favCity/:id', async (req, res) => {
+router.get('/user/:id', async (req, res) => {
   try {
     const user = await db.getUserById(Number(req.params.id))
     res.json(user)
