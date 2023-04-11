@@ -9,7 +9,7 @@ const WeatherDetails = ({setBgColor,setBgImg}) => {
   const [forecastArr, setForecastArr] = useState([])
   const [nameCity, setNameCity] = useState('')
   const [countryName, setCountryName] = useState('')
-  const [isValid, setIsValid] = useState(false)
+ 
 
 
   useEffect(() => {

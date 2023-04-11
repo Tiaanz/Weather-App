@@ -1,30 +1,22 @@
 import React, { useState, useEffect } from 'react'
+import { useAuth0 } from '@auth0/auth0-react'
 import { BiLogIn } from 'react-icons/bi'
 import { Link, useNavigate } from 'react-router-dom'
 import { BsGeoAltFill } from 'react-icons/bs'
-
-
-import Modal from '@mui/material/Modal'
 import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
 import { IconButton } from '@mui/material'
 import { Menu, MenuItem, Divider, ListItemIcon } from '@mui/material'
 import { Logout } from '@mui/icons-material'
 import LocationCityIcon from '@mui/icons-material/LocationCity'
-
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { useUserStore } from '../userStore'
 
 import { usePosition } from '../hooks/usePosition'
-import { getCityByGeocode, getWeatherByCity, authUser,getFavCitiesById  } from '../api/apiClient'
+import {
+  getCityByGeocode,
+  getWeatherByCity,
+  authUser,
+  getFavCitiesById,
+} from '../api/apiClient'
 
 const style = {
   position: 'absolute',
@@ -37,46 +29,20 @@ const style = {
   borderRadius: '20px',
   p: 4,
 }
-const theme = createTheme()
 
-const NavBar = ({ loggedName, setLoggedName }) => {
-  const { latitude, longitude, error } = usePosition()
+const NavBar = () => {
+  const { latitude, longitude } = usePosition()
 
-  const nav=useNavigate()
+  const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0()
+
+  const nav = useNavigate()
 
   const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
-  // const [opened, setOpened] = useState(false)
 
   const [currentCity, setCurrentCity] = useState('')
   const [temp, setTemp] = useState('')
 
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const logged = localStorage.getItem('username')
-  const id=localStorage.getItem('userId')
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    const loggedUser = {
-      email: data.get('email'),
-      password: data.get('password'),
-    }
-    const res = await authUser(loggedUser)
-    console.log(res)
-    if (res.firstName) {
-      localStorage.setItem("username", res.firstName)
-      localStorage.setItem("userId", res.id)
-      localStorage.setItem("favCities", res.favCity)
-      // setLogged(localStorage.getItem("username"))
-      setOpen(false)
-      nav('/')
-    } else {
-      setErrorMessage('Incorrect email or password')
-    }
-  }
+  const currentUser = useUserStore((state) => state.currentUser)
 
   useEffect(() => {
     fetchGeoCity()
@@ -97,31 +63,22 @@ const NavBar = ({ loggedName, setLoggedName }) => {
 
   async function fetchGeoCity() {
     const city = await getCityByGeocode(latitude, longitude)
-    console.log(city)
     setCurrentCity(() => city)
   }
 
-  
   const [anchorEl, setAnchorEl] = React.useState(null)
   const openMenu = Boolean(anchorEl)
-  const handleClick = (event) => {
+
+  function handleClick(event) {
     setAnchorEl(event.currentTarget)
   }
-  const handleCloseMenu = () => {
+
+  function handleCloseMenu() {
     setAnchorEl(null)
-   
   }
 
-  const handleLogout = () => {
-    // setLogged('')
-    localStorage.removeItem('username')
-    localStorage.removeItem('userId')
-    localStorage.removeItem('favCities')
-    nav('/')
-  }
-
- async function showFavCities() {
-    if (id) {
+  async function showFavCities() {
+    if (isAuthenticated) {
       nav('/favorite_cities')
     }
   }
@@ -153,13 +110,13 @@ const NavBar = ({ loggedName, setLoggedName }) => {
             </div>
           </div>
 
-          {logged ? (
+          {isAuthenticated && !isLoading && currentUser.firstName ? (
             <>
               <span className=" bg-white opacity-70 shadow-neutral-100 p-1">
-                Kia ora, {logged}
+                Kia ora, {currentUser.firstName}
               </span>
               <IconButton
-                className='hover:ring-2 ring-slate-300'
+                className="hover:ring-2 ring-slate-300"
                 onClick={handleClick}
                 size="small"
                 sx={{ ml: 2 }}
@@ -168,7 +125,8 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 aria-expanded={open ? 'true' : undefined}
               >
                 <Avatar sx={{ width: 40, height: 40 }}>
-                  {Array.from(logged)[0]}
+                  {currentUser.firstName &&
+                    Array.from(currentUser.firstName)[0]}
                 </Avatar>
               </IconButton>
               <Menu
@@ -206,9 +164,11 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem onClick={handleCloseMenu}>
-                  <Avatar /> Profile
-                </MenuItem>
+                <Link to={'/profile'}>
+                  <MenuItem>
+                    <Avatar /> Profile
+                  </MenuItem>
+                </Link>
                 <MenuItem onClick={showFavCities}>
                   <Avatar>
                     <LocationCityIcon />
@@ -216,7 +176,13 @@ const NavBar = ({ loggedName, setLoggedName }) => {
                   My favorite cities
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleLogout}>
+                <MenuItem
+                  onClick={() => {
+                    logout({
+                      logoutParams: { returnTo: window.location.origin },
+                    })
+                  }}
+                >
                   <ListItemIcon>
                     <Logout fontSize="small" />
                   </ListItemIcon>
@@ -228,101 +194,21 @@ const NavBar = ({ loggedName, setLoggedName }) => {
             <>
               <BiLogIn className="mx-3 text-2xl hidden sm:block" />
               <button
-                onClick={handleOpen}
+                onClick={() => loginWithRedirect()}
                 className="sm:text-base text-sm hidden sm:block rounded-full bg-white px-4 py-1 hover:cursor-pointer shadow-md hover:ring ring-white"
               >
                 Log in
               </button>
-              <Link to={'/register'}>
-                <button className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md">
-                  Register
-                </button>
-              </Link>
+              <button
+                onClick={() => loginWithRedirect()}
+                className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md"
+              >
+                Register
+              </button>
             </>
           )}
         </div>
       </nav>
-
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 4,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                  <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                  Log in
-                </Typography>
-                <Box
-                  component="form"
-                  onSubmit={handleSubmit}
-                  noValidate
-                  sx={{ mt: 1 }}
-                >
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    autoFocus
-                    onChange={() => setErrorMessage('')}
-                  />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    onChange={() => setErrorMessage('')}
-                  />
-                  {errorMessage && (
-                    <p className="text-red-500">Incorrect email or password</p>
-                  )}
-                  <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Log In
-                  </Button>
-                  <Grid container>
-                    <Grid item xs>
-                      <Link href="#" variant="body2">
-                        Forgot password?
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link to={'/register'} onClick={handleClose}>
-                        {"Don't have an account? Register"}
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Box>
-            </Container>
-          </ThemeProvider>
-        </Box>
-      </Modal>
     </div>
   )
 }
