@@ -1,67 +1,74 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { addFavCity,updateFavCity} from '../api/apiClient'
+import { addFavCity, updateFavCity, getFavCitiesById } from '../api/apiClient'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useUserStore } from '../userStore'
 
 const WeatherCard = ({ data }) => {
+
+  const currentUser = useUserStore((state) => state.currentUser)
+  const setUser = useUserStore((state) => state.setUser)
+
   const [toggleFav, setToggleFav] = useState(false)
 
-  const {isAuthenticated,loginWithRedirect}=useAuth0()
+  const { isAuthenticated, loginWithRedirect } = useAuth0()
 
   const url = `${data.cityName}_${data.country.trim()}`
-  const nav=useNavigate()
 
-  const id = localStorage.getItem("userId")
-  let favCitiesArr
-  const favCities = localStorage.getItem('favCities')
-  if (favCities && favCities.includes(',')) {
-    favCitiesArr=favCities.split(',')
-  } else {
-    favCitiesArr=[favCities]
+  async function fetchFavCities(id) {
+    const favCities = await getFavCitiesById(id)
+  
+    //set the fav icon to be selected if it's been added
+    setToggleFav(() => favCities.some((city) => city === data.cityName))
   }
-
 
   //check if the city has been added to favorite
   useEffect(() => {
-    console.log(favCitiesArr.some(city=>city===data.cityName));
-    setToggleFav(()=>favCitiesArr.some(city=>city===data.cityName))
-  },[favCities])
+    fetchFavCities(currentUser.id)
+   
+  }, [data.cityName])
 
-
-  
   async function addToFav(city) {
     if (isAuthenticated) {
       if (toggleFav) {
-        setToggleFav(preState => !preState)
-       const newFavCity= await updateFavCity(id, city)
-        localStorage.setItem('favCities',newFavCity.favCity)
+        setToggleFav((preState) => !preState)
+        const newFavCity = await updateFavCity(currentUser.id, city)
+        if (newFavCity.favCity.includes(',')) {
+          const newFavCitiesArr=newFavCity.favCity.split(',')
+          setUser({favCities:newFavCitiesArr })
+        } else {
+          setUser({favCities:[newFavCity]})
+        }
       } else {
-        setToggleFav(preState => !preState)
-        const newFavCity = await addFavCity(id, city)
-        localStorage.setItem('favCities',newFavCity.favCity)
+        setToggleFav((preState) => !preState)
+        const newFavCity = await addFavCity(currentUser.id, city)
+        if (newFavCity.favCity.includes(',')) {
+          const newFavCitiesArr=newFavCity.favCity.split(',')
+          setUser({favCities:newFavCitiesArr })
+        } else {
+          setUser({favCities:[newFavCity]})
+        }
       }
     } else {
-    loginWithRedirect()
+      loginWithRedirect()
+    }
   }
-  
-}
 
   return (
-    
     <div className=" my-10 px-10 w-3/4 sm:w-3/5 md:w-2/4 lg:w-2/5  rounded-2xl min-w-fit shadow-3xl shadow-neutral-100 bg-white opacity-70">
       <h2 className="text-2xl vsm:text-4xl my-6 flex items-center ">
-        <Link
-          className=" hover:underline hover:cursor-pointer"
-          
-          to={url}
-        >
+        <Link className=" hover:underline hover:cursor-pointer" to={url}>
           {data.cityName}, {data.country}
         </Link>
-        <div className="ml-10" onClick={() =>addToFav(data.cityName)}>
+        <div className="ml-10" onClick={() => addToFav(data.cityName)}>
           <svg
             width="30"
             height="30"
-            style={{fill:!toggleFav?'none':'red' ,stroke:!toggleFav?'black':'none', strokeWidth:'2px'}}
+            style={{
+              fill: !toggleFav ? 'none' : 'red',
+              stroke: !toggleFav ? 'black' : 'none',
+              strokeWidth: '2px',
+            }}
           >
             <path d="M11.198 9C8.85 9 7 10.89 7 13.29c0 3.128 1.92 5.82 9 11.71 7.08-5.89 9-8.582 9-11.71C25 10.89 23.15 9 20.802 9c-2.098 0-3.237 1.273-4.126 2.327l-.676.8-.676-.8C14.434 10.31 13.296 9 11.197 9h0z"></path>
           </svg>
@@ -179,8 +186,7 @@ const WeatherCard = ({ data }) => {
       <span className="flex justify-end text-sm vsm:text-md">
         Local time: {data.time}
       </span>
-      </div>
-      
+    </div>
   )
 }
 

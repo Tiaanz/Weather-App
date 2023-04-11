@@ -3,26 +3,12 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { BiLogIn } from 'react-icons/bi'
 import { Link, useNavigate } from 'react-router-dom'
 import { BsGeoAltFill } from 'react-icons/bs'
-
-import Modal from '@mui/material/Modal'
 import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
 import { IconButton } from '@mui/material'
 import { Menu, MenuItem, Divider, ListItemIcon } from '@mui/material'
 import { Logout } from '@mui/icons-material'
 import LocationCityIcon from '@mui/icons-material/LocationCity'
 import { useUserStore } from '../userStore'
-
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 import { usePosition } from '../hooks/usePosition'
 import {
@@ -43,19 +29,15 @@ const style = {
   borderRadius: '20px',
   p: 4,
 }
-const theme = createTheme()
 
 const NavBar = () => {
-  const { latitude, longitude, error } = usePosition()
-  const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
-    useAuth0()
+  const { latitude, longitude } = usePosition()
+
+  const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0()
 
   const nav = useNavigate()
 
   const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
- 
 
   const [currentCity, setCurrentCity] = useState('')
   const [temp, setTemp] = useState('')
@@ -81,25 +63,18 @@ const NavBar = () => {
 
   async function fetchGeoCity() {
     const city = await getCityByGeocode(latitude, longitude)
-    console.log(city)
     setCurrentCity(() => city)
   }
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const openMenu = Boolean(anchorEl)
-  const handleClick = (event) => {
+
+  function handleClick(event) {
     setAnchorEl(event.currentTarget)
   }
-  const handleCloseMenu = () => {
+
+  function handleCloseMenu() {
     setAnchorEl(null)
-  }
-
-  const handleLogout = () => {
-
-    localStorage.removeItem('firstName')
-    localStorage.removeItem('lastName')
-    localStorage.removeItem('favCities')
-    
   }
 
   async function showFavCities() {
@@ -150,8 +125,8 @@ const NavBar = () => {
                 aria-expanded={open ? 'true' : undefined}
               >
                 <Avatar sx={{ width: 40, height: 40 }}>
-                  {currentUser.firstName && Array.from(currentUser.firstName)[0]}
-                  
+                  {currentUser.firstName &&
+                    Array.from(currentUser.firstName)[0]}
                 </Avatar>
               </IconButton>
               <Menu
@@ -190,9 +165,10 @@ const NavBar = () => {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
                 <Link to={'/profile'}>
-                <MenuItem>
-                  <Avatar /> Profile
-                </MenuItem></Link> 
+                  <MenuItem>
+                    <Avatar /> Profile
+                  </MenuItem>
+                </Link>
                 <MenuItem onClick={showFavCities}>
                   <Avatar>
                     <LocationCityIcon />
@@ -204,10 +180,8 @@ const NavBar = () => {
                   onClick={() => {
                     logout({
                       logoutParams: { returnTo: window.location.origin },
-                    });handleLogout()
-                  }
-                    
-                  }
+                    })
+                  }}
                 >
                   <ListItemIcon>
                     <Logout fontSize="small" />
@@ -225,11 +199,12 @@ const NavBar = () => {
               >
                 Log in
               </button>
-              
-                <button onClick={()=>loginWithRedirect()} className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md">
-                  Register
-                </button>
-              
+              <button
+                onClick={() => loginWithRedirect()}
+                className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md"
+              >
+                Register
+              </button>
             </>
           )}
         </div>

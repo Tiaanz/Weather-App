@@ -23,21 +23,16 @@ import { useUserStore } from '../userStore'
 
 const theme = createTheme()
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-})
-
 export default function Profile({ setBgColor, setBgImg }) {
-  
-  const currentUser  = useUserStore(state => state.currentUser)
-  const setUser = useUserStore(state => state.setUser)
-  
+  const nav = useNavigate()
+  const currentUser = useUserStore((state) => state.currentUser)
+  const setUser = useUserStore((state) => state.setUser)
+
   const { user, isLoading } = useAuth0()
   const [open, setOpen] = React.useState(false)
   const [showRegister, setShowRegister] = React.useState(false)
 
   React.useEffect(() => {
-
     setBgImg('')
     setBgColor('rgb(219 234 254)')
     console.log(user)
@@ -48,12 +43,9 @@ export default function Profile({ setBgColor, setBgImg }) {
 
   async function fetchUser(authId) {
     const userDB = await getUserByAuthId(authId)
-   
+
     if (userDB) {
-    
-      // setFirstName(userDB.firstName)
-      // setLastName(userDB.lastName)
-      setUser( { firstName: userDB.firstName, lastName: userDB.lastName } )
+      setUser({id:userDB.id, firstName: userDB.firstName, lastName: userDB.lastName })
     } else {
       setShowRegister(true)
     }
@@ -74,21 +66,11 @@ export default function Profile({ setBgColor, setBgImg }) {
     }
     console.log(newUser)
     await addUser(newUser)
-  
-    // setFirstName(newUser.firstName)
-    // setLastName(newUser.lastName)
+
     setUser({ firstName: newUser.firstName, lastName: newUser.lastName })
     setOpen(true)
     setShowRegister(false)
   }
-
-  // const handleClose = (event, reason) => {
-  //   if (reason === 'clickaway') {
-  //     return
-  //   }
-
-  //   setOpen(false)
-  // }
 
   return (
     <>
@@ -162,27 +144,34 @@ export default function Profile({ setBgColor, setBgImg }) {
         </ThemeProvider>
       ) : (
         !isLoading && (
-          <Container
-            component="main"
-            maxWidth="xs"
-            style={{
-              marginTop: '60px',
-              backgroundColor: 'white',
-              borderRadius: '20px',
-              boxShadow:
-                '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-            }}
-          >
-            <h1 className="text-xl text-blue-700 mb-2">Profile</h1>
-            <ul>
-              <li>
-                {currentUser.firstName}
-                &nbsp;
-                {currentUser.lastName}
-              </li>
-              <li>{user?.email}</li>
-            </ul>
-          </Container>
+          <>
+            <Container
+              component="main"
+              maxWidth="xs"
+              style={{
+                marginTop: '60px',
+                backgroundColor: 'white',
+                borderRadius: '20px',
+                boxShadow:
+                  '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+              }}
+            >
+              <h1 className="text-xl text-blue-700 mb-2">Profile</h1>
+              <ul>
+                <li>
+                  {currentUser.firstName}
+                  &nbsp;
+                  {currentUser.lastName}
+                </li>
+                <li>{user?.email}</li>
+              </ul>
+            </Container>
+            <Link to={'/'}>
+              <div className="w-1/3 my-10 mx-auto text-center hover:underline hover:cursor-pointer text-blue-700 font-medium">
+                Go back to Home Page
+              </div>
+            </Link>
+          </>
         )
       )}
     </>

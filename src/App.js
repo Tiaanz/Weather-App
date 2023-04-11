@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState} from 'react'
 import { Route, Routes } from 'react-router-dom'
 
 import WeatherDetails from './pages/WeatherDetails'
 import Home from './pages/Home'
 import Layout from './components/Layout'
 import Profile from './pages/Profile'
-import Login from './pages/Login'
+
 import FavCities from './pages/FavCities'
 
 const App = () => {
@@ -37,7 +37,6 @@ const App = () => {
         <Route path="/" element={<Home weatherObj={weatherObj} setWeatherObj={setWeatherObj} showWeatherCard={showWeatherCard} setShowWeatherCard={setShowWeatherCard} bgColor={bgColor} setBgColor={setBgColor} bgImg={bgImg} setBgImg={setBgImg} showQuote={showQuote} setShowQuote={setShowQuote} />}></Route>
         <Route path="/profile" element={<Profile setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
         <Route path="/:cityname" element={<WeatherDetails setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
-        <Route path="/login" element={<Login setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
         <Route path="/favorite_cities" element={<FavCities setBgColor={setBgColor} setBgImg={setBgImg} />}></Route>
       </Routes>
     </Layout>
