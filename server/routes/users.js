@@ -1,6 +1,6 @@
 const express = require('express')
 const db = require('../db/db')
-const bcrypt = require('bcrypt')
+const checkJwt = require('../auth0')
 
 const router = express.Router()
 
@@ -45,9 +45,16 @@ router.post('/', async (req, res) => {
 })
 
 //add favorite city
-router.patch('/favCity', async (req, res) => {
+router.patch('/favCity', checkJwt, async (req, res) => {
   try {
     let favCities
+    const auth0Id = req.auth?.sub
+
+    if (!auth0Id) {
+      console.error('No auth0Id')
+      return res.status(401).send('Unauthorized')
+    } 
+
     const user = await db.getUserById(Number(req.body.id))
     if (user.favCity && user.favCity.includes(',')) {
       favCities = user.favCity.split(',')
@@ -71,8 +78,16 @@ router.patch('/favCity', async (req, res) => {
 })
 
 //delete favorite city
-router.delete('/favCity', async (req, res) => {
+router.delete('/favCity', checkJwt, async (req, res) => {
   try {
+
+    const auth0Id = req.auth?.sub
+
+    if (!auth0Id) {
+      console.error('No auth0Id')
+      return res.status(401).send('Unauthorized')
+    } 
+
     const user = await db.getUserById(Number(req.body.id))
     const favCities = user.favCity.split(',')
     const citiesArr = favCities.filter((item) => item !== req.body.city)

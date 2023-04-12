@@ -8,7 +8,9 @@ export async function getUserData() {
 }
 
 export async function getUserByAuthId(authId) {
-  const res = await request.get(`/api/v1/users/user-auth/${authId}`).accept('application/json')
+  const res = await request
+    .get(`/api/v1/users/user-auth/${authId}`)
+    .accept('application/json')
   return res.body
 }
 
@@ -16,13 +18,21 @@ export async function addUser(newUser) {
   await request.post('/api/v1/users').send(newUser)
 }
 
-export async function addFavCity(id, city) {
-  const res = await request.patch('/api/v1/users/favCity').send({ id, city })
+export async function addFavCity(id, city, token) {
+
+  const res = await request
+    .patch('/api/v1/users/favCity')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ id, city })
   return res.body
 }
 
-export async function updateFavCity(id,city) {
-  const res = await request.delete('/api/v1/users/favCity').send({ id, city })
+export async function updateFavCity(id, city, token) {
+
+  const res = await request
+    .delete('/api/v1/users/favCity')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ id, city })
   return res.body
 }
 
@@ -31,7 +41,7 @@ export async function getFavCitiesById(id) {
     .get(`/api/v1/users/user/${id}`)
     .accept('application/json')
   if (res.body.favCity) {
-    const cities=res.body.favCity.split(',')
+    const cities = res.body.favCity.split(',')
     return cities
   } else {
     const cities = []
