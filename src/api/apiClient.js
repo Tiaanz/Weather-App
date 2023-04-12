@@ -40,7 +40,7 @@ export async function getFavCitiesById(id) {
   const res = await request
     .get(`/api/v1/users/user/${id}`)
     .accept('application/json')
-  if (res.body.favCity) {
+  if (res.body.favCity!==null) {
     const cities = res.body.favCity.split(',')
     return cities
   } else {

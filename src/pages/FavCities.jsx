@@ -18,6 +18,7 @@ const FavCities = ({setBgImg,setBgColor}) => {
     if (isAuthenticated) {
       async function fetchFavCities() {
         const cities = await getFavCitiesById(currentUser.id)
+      console.log(cities);
         setCities(cities)
       }
       fetchFavCities()
