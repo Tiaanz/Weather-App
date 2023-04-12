@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { addFavCity, updateFavCity, getFavCitiesById } from '../api/apiClient'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useUserStore } from '../userStore'
@@ -9,7 +9,9 @@ const WeatherCard = ({ data }) => {
   const currentUser = useUserStore((state) => state.currentUser)
   const setUser = useUserStore((state) => state.setUser)
 
-  const [toggleFav, setToggleFav] = useState(false)
+  const {getAccessTokenSilently}=useAuth0()
+
+  const [favCity, setfavCity] = useState(false)
 
   const { isAuthenticated, loginWithRedirect } = useAuth0()
 
@@ -19,20 +21,20 @@ const WeatherCard = ({ data }) => {
     const favCities = await getFavCitiesById(id)
   
     //set the fav icon to be selected if it's been added
-    setToggleFav(() => favCities.some((city) => city === data.cityName))
+    setfavCity(() => favCities.some((city) => city === data.cityName))
   }
 
   //check if the city has been added to favorite
   useEffect(() => {
     fetchFavCities(currentUser.id)
-   
   }, [data.cityName])
 
-  async function addToFav(city) {
+  async function updateFavCities(city) {
     if (isAuthenticated) {
-      if (toggleFav) {
-        setToggleFav((preState) => !preState)
-        const newFavCity = await updateFavCity(currentUser.id, city)
+      const token=await getAccessTokenSilently()
+      if (favCity) {
+        setfavCity((preState) => !preState)
+        const newFavCity = await updateFavCity(currentUser.id, city, token)
         if (newFavCity.favCity.includes(',')) {
           const newFavCitiesArr=newFavCity.favCity.split(',')
           setUser({favCities:newFavCitiesArr })
@@ -40,8 +42,8 @@ const WeatherCard = ({ data }) => {
           setUser({favCities:[newFavCity]})
         }
       } else {
-        setToggleFav((preState) => !preState)
-        const newFavCity = await addFavCity(currentUser.id, city)
+        setfavCity((preState) => !preState)
+        const newFavCity = await addFavCity(currentUser.id, city,token)
         if (newFavCity.favCity.includes(',')) {
           const newFavCitiesArr=newFavCity.favCity.split(',')
           setUser({favCities:newFavCitiesArr })
@@ -60,13 +62,13 @@ const WeatherCard = ({ data }) => {
         <Link className=" hover:underline hover:cursor-pointer" to={url}>
           {data.cityName}, {data.country}
         </Link>
-        <div className="ml-10" onClick={() => addToFav(data.cityName)}>
+        <div className="ml-10" onClick={() => updateFavCities(data.cityName)}>
           <svg
             width="30"
             height="30"
             style={{
-              fill: !toggleFav ? 'none' : 'red',
-              stroke: !toggleFav ? 'black' : 'none',
+              fill: !favCity ? 'none' : 'red',
+              stroke: !favCity ? 'black' : 'none',
               strokeWidth: '2px',
             }}
           >
