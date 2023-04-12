@@ -9,17 +9,14 @@ const WeatherCard = ({ data }) => {
   const currentUser = useUserStore((state) => state.currentUser)
   const setUser = useUserStore((state) => state.setUser)
 
-  const {getAccessTokenSilently}=useAuth0()
-
   const [favCity, setfavCity] = useState(false)
 
-  const { isAuthenticated, loginWithRedirect } = useAuth0()
+  const { isAuthenticated, loginWithRedirect,getAccessTokenSilently } = useAuth0()
 
   const url = `${data.cityName}_${data.country.trim()}`
 
   async function fetchFavCities(id) {
     const favCities = await getFavCitiesById(id)
-  
     //set the fav icon to be selected if it's been added
     setfavCity(() => favCities.some((city) => city === data.cityName))
   }

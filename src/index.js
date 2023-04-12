@@ -11,7 +11,6 @@ const element = (
   <Auth0Provider
     domain={'dev-rn6pqzyqjn0t0s3v.us.auth0.com'}
     clientId={'sZkqgyKkJ0lzBCvotHziDv6U9VdrL5MK'}
-    
     authorizationParams={{
       redirect_uri: `${window.location.origin}/profile`,
       audience:'https://weather-user/api'
