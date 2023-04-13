@@ -14,8 +14,7 @@ import { usePosition } from '../hooks/usePosition'
 import {
   getCityByGeocode,
   getWeatherByCity,
-  authUser,
-  getFavCitiesById,
+  getUserByAuthId
 } from '../api/apiClient'
 
 const style = {
@@ -33,7 +32,7 @@ const style = {
 const NavBar = () => {
   const { latitude, longitude } = usePosition()
 
-  const { loginWithRedirect, logout, isAuthenticated, isLoading } = useAuth0()
+  const { loginWithRedirect, logout, isAuthenticated, isLoading,user} = useAuth0()
 
   const nav = useNavigate()
 
@@ -43,6 +42,18 @@ const NavBar = () => {
   const [temp, setTemp] = useState('')
 
   const currentUser = useUserStore((state) => state.currentUser)
+  const setUser=useUserStore((state)=>state.setUser)
+
+
+
+  async function fetchUser(authId) {
+    const userDB = await getUserByAuthId(authId)
+
+    if (userDB) {
+      setUser({id:userDB.id, firstName: userDB.firstName, lastName: userDB.lastName })
+    } 
+  }
+
 
   useEffect(() => {
     fetchGeoCity()
@@ -50,6 +61,11 @@ const NavBar = () => {
       const weather = await getWeatherByCity(city)
       setTemp(weather.current.temp_c)
     }
+
+    if (user) {
+      fetchUser(user.sub)
+    }
+
     let timer
     if (currentCity) {
       fetchWeather(currentCity)
@@ -59,7 +75,7 @@ const NavBar = () => {
       }, 60000)
     }
     return () => clearInterval(timer)
-  }, [latitude, longitude, currentCity])
+  }, [latitude, longitude, currentCity,user])
 
   async function fetchGeoCity() {
     const city = await getCityByGeocode(latitude, longitude)
@@ -200,7 +216,11 @@ const NavBar = () => {
                 Log in
               </button>
               <button
-                onClick={() => loginWithRedirect()}
+                onClick={() =>
+                  loginWithRedirect(
+                    { redirectUri: `${window.location.origin}/profile` }
+                  )
+                }
                 className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md"
               >
                 Register

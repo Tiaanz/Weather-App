@@ -1,7 +1,7 @@
 
 const server=require('./server')
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 
 server.listen(PORT, () => {
