@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
 import { Link } from 'react-router-dom'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
@@ -12,19 +10,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { Snackbar } from '@mui/material'
-import MuiAlert from '@mui/material/Alert'
-import { addUser } from '../api/apiClient'
-import { useNavigate } from 'react-router-dom'
 
-import { getUserByAuthId } from '../api/apiClient'
+
+import { getUserByAuthId,addUser } from '../api/apiClient'
+
 import { useAuth0 } from '@auth0/auth0-react'
 import { useUserStore } from '../userStore'
 
 const theme = createTheme()
 
 export default function Profile({ setBgColor, setBgImg }) {
-  const nav = useNavigate()
+
   const currentUser = useUserStore((state) => state.currentUser)
   const setUser = useUserStore((state) => state.setUser)
 
@@ -35,7 +31,7 @@ export default function Profile({ setBgColor, setBgImg }) {
   React.useEffect(() => {
     setBgImg('')
     setBgColor('rgb(219 234 254)')
-    console.log(user)
+   
     if (user) {
       fetchUser(user.sub)
     }
@@ -117,6 +113,7 @@ export default function Profile({ setBgColor, setBgImg }) {
                       id="firstName"
                       label="First Name"
                       autoFocus
+                      inputProps={{ maxLength: 12 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={16}>
@@ -127,6 +124,7 @@ export default function Profile({ setBgColor, setBgImg }) {
                       label="Last Name"
                       name="lastName"
                       autoComplete="family-name"
+                      inputProps={{ maxLength: 12 }}
                     />
                   </Grid>
                 </Grid>
