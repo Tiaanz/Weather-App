@@ -39,10 +39,12 @@ const NavBar = () => {
     const userDB = await getUserByAuthId(authId)
 
     if (userDB) {
-      setUser({id:userDB.id, firstName: userDB.firstName, lastName: userDB.lastName })
+      setUser({ id: userDB.id, firstName: userDB.firstName, lastName: userDB.lastName })
+  
     } 
   }
 
+  
 
   useEffect(() => {
     fetchGeoCity()
@@ -51,6 +53,7 @@ const NavBar = () => {
       setTemp(weather.current.temp_c)
     }
 
+   
     if (user) {
       fetchUser(user.sub)
     }
@@ -198,21 +201,23 @@ const NavBar = () => {
           ) : (
             <>
               <BiLogIn className="mx-3 text-2xl hidden sm:block" />
-              <button
-                onClick={() => loginWithRedirect()}
+              {/* <button
+                  onClick={() => loginWithRedirect(
+                    
+                )}
                 className="sm:text-base text-sm hidden sm:block rounded-full bg-white px-4 py-1 hover:cursor-pointer shadow-md hover:ring ring-white"
               >
                 Log in
-              </button>
+              </button> */}
               <button
                 onClick={() =>
                   loginWithRedirect(
-                    { redirectUri: `${window.location.origin}/profile` }
+                    { redirectUri:`${window.location.origin}/profile` }
                   )
                 }
                 className="ml-6 sm:text-base hidden sm:block text-sm hover:ring hover:cursor-pointer text-white bg-blue-500 rounded-full px-4 py-1 shadow-md"
               >
-                Register
+                Sign in
               </button>
             </>
           )}
