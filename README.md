@@ -9,6 +9,7 @@ This is a weather app bootstrapped with `create-react-app`.
 
 - React
 - Tailwind CSS
+- Material UI
 - Auth0
 - SQLite3
 - External WeatherAPI
