@@ -17,7 +17,7 @@ This is a weather app bootstrapped with `create-react-app`.
 
 ## Features
 
-- real-time weather app
+- Real-time weather app
 - Authentication and authorisation with Auth0
 - Fetch weather data from external weather API
 - Autocomplete search bar
