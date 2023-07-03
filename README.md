@@ -1,18 +1,19 @@
-# [Weather App]
+# Weather App
 
 This is a weather app bootstrapped with `create-react-app`.
 
-[![weather App](./public/weather.png)]
+<img src="public/weather.png" alt="beehive" width="800" height="400">
+
 
 ## Tech Stack
 
-- [React]
-- [Tailwind CSS]
-- [Auth0]
-- [SQLite3]
-- [External WeatherAPI]
-- [Express.js]
-- [RESTful API]
+- React
+- Tailwind CSS
+- Auth0
+- SQLite3
+- External WeatherAPI
+- Express.js
+- RESTful API
 
 ## Features
 
